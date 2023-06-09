@@ -1,0 +1,20 @@
+.container {
+  background-color: #222131;
+  min-height: 100vh;
+
+  display: grid;
+  grid-template-columns: 450px 1fr;
+}
+.loginPanel {
+  background-color: #39394b;
+}
+.imagePanel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.imagePanel img {
+  padding: 8px;
+  max-width: 100%;
+}
