@@ -1,6 +1,4 @@
 .button {
-  margin: 100px;
-
   cursor: pointer;
   height: 50px;
   padding: 1em 2em;
@@ -97,7 +95,7 @@
   fill: #33315f;
 }
 .button__secondary {
-  background-color: #222131 !important;
+  background-color: transparent !important;
   color: #5a57ee;
 }
 .button__secondary svg {
@@ -134,7 +132,7 @@
   background-color: transparent !important;
   border-color: transparent !important;
   color: #5a57ee;
-  padding: 0.25em !important;
+  padding: 0.5em !important;
   height: unset;
 }
 .button__text svg {
@@ -159,4 +157,94 @@
 }
 .button__text:active svg {
   fill: #5a57ee;
+}
+
+/* IconButton */
+.iconButton {
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+
+  padding: 12px;
+
+  border: none;
+  border: 2px solid transparent;
+  outline: none;
+  background-color: #605cff;
+  border-radius: 10px;
+
+  transition: all 0.1s ease-in;
+}
+.iconButton:hover {
+  background-color: #4742fd;
+}
+.iconButton:focus {
+  background-color: #605cff;
+  border-color: #4742fd;
+}
+.iconButton:active {
+  background-color: #302bff;
+  border-color: transparent;
+}
+.iconButton svg {
+  width: 28px;
+  height: 28px;
+  fill: #fff;
+  transition: all 0.1s ease-in;
+}
+.iconButton__disabled {
+  pointer-events: none;
+  background-color: #33315f;
+}
+.iconButton__disabled svg {
+  fill: #605cff;
+}
+
+.iconButton__small {
+  padding: 8px;
+}
+.iconButton__small svg {
+  width: 20px;
+  height: 20px;
+}
+.iconButton__medium {
+  padding: 10px;
+}
+.iconButton__medium svg {
+  width: 24px;
+  height: 24px;
+}
+.iconButton__secondary {
+  background-color: transparent !important;
+  border-color: #605cff;
+}
+.iconButton__secondary svg {
+  fill: #605cff;
+}
+
+.iconButton__secondary:hover {
+  border-color: #4742fd;
+}
+.iconButton__secondary:hover svg {
+  fill: #4742fd;
+}
+.iconButton__secondary:focus {
+  border-color: #4742fd;
+  box-shadow: inset 0 0 0 1px #605cff;
+}
+.iconButton__secondary:focus svg {
+  fill: #4742fd;
+}
+.iconButton__secondary:active {
+  border-color: #302bff;
+  box-shadow: unset;
+}
+.iconButton__secondary:active svg {
+  fill: #302bff;
+}
+.iconButton__secondary.iconButton__disabled {
+  border-color: #33315f;
+}
+.iconButton__secondary.iconButton__disabled svg {
+  fill: #33315f;
 }

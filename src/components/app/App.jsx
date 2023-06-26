@@ -9,7 +9,7 @@ import GuestRoute from '../../pages/routes/GuestRoute';
 import Pages from '../../pages/routes/pages';
 
 function App() {
-  const [isLogged, setIsLogged] = useState(false);
+  const [isLogged, setIsLogged] = useState(true);
   const [theme, setTheme] = useState(
     window.matchMedia &&
       window.matchMedia('(prefers-color-scheme: light)').matches

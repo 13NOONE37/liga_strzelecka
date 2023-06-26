@@ -1,5 +1,10 @@
 import AdminPage from '../admin/AdminPage';
+import CompetitionsPage from '../admin/competitions/CompetitionsPage';
 import DashboardPage from '../admin/dashboard/DashboardPage';
+import HelpPage from '../admin/help/HelpPage';
+import ResultsPage from '../admin/results/ResultsPage';
+import SchoolsPage from '../admin/schools/SchoolsPage';
+import ShootersPage from '../admin/shooters/ShootersPage';
 import Auth from '../public/Auth/Auth';
 import Main from '../public/Main/Main';
 
@@ -22,6 +27,26 @@ const Pages = {
         {
           path: '/admin/dashboard',
           element: <DashboardPage />,
+        },
+        {
+          path: '/admin/results',
+          element: <ResultsPage />,
+        },
+        {
+          path: '/admin/competitions',
+          element: <CompetitionsPage />,
+        },
+        {
+          path: '/admin/shooters',
+          element: <ShootersPage />,
+        },
+        {
+          path: '/admin/schools',
+          element: <SchoolsPage />,
+        },
+        {
+          path: '/admin/help',
+          element: <HelpPage />,
         },
       ],
     },

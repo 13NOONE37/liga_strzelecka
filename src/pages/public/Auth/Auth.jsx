@@ -6,7 +6,7 @@ import Input from '../../../components/input/Input';
 import { ReactComponent as Visibility } from '../../../assets/icons/visibility.svg';
 import { ReactComponent as VisibilityOff } from '../../../assets/icons/visibility_off.svg';
 import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow_circle_right.svg';
-import DefaultButton from '../../../components/button/Button';
+import DefaultButton, { IconButton } from '../../../components/button/Button';
 export default function Auth() {
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -37,11 +37,22 @@ export default function Auth() {
           <DefaultButton
             text={'Button'}
             Icon={() => <ArrowIcon />}
-            isLoading={!true}
+            isLoading={true}
             // disabled={true}
             iconPosition={'right'}
           />
           <DefaultButton text={'Button'} isLoading={true} />
+          <IconButton
+            Icon={() => <ArrowIcon />}
+            isLoading={!true}
+            disabled={true}
+          />
+          <IconButton
+            Icon={() => <ArrowIcon />}
+            style={'secondary'}
+            isLoading={!true}
+            disabled={true}
+          />
           <Input
             heading="Podaj login"
             type={'text'}

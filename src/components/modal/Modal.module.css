@@ -1,0 +1,68 @@
+.container {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 999;
+
+  width: 100vw;
+  height: 100vh;
+  background: hsla(240, 5%, 5%, 0.6);
+  animation: showContainer 0.25s ease-in-out forwards;
+}
+.box {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  background-color: #39394b;
+  transform-origin: center center;
+  translate: -50% -50% 0;
+
+  animation: showBox 0.25s ease-in-out forwards;
+  border-radius: 10px;
+  padding: 40px 32px;
+}
+
+.container.hide {
+  animation: hideContainer 0.15s 0.15s ease-in-out forwards;
+}
+.box.hide {
+  animation: hideBox 0.15s ease-in-out forwards;
+}
+@keyframes showContainer {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes hideContainer {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes showBox {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes hideBox {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0);
+    opacity: 0;
+  }
+}

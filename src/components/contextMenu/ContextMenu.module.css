@@ -1,0 +1,18 @@
+.container {
+  position: relative;
+}
+
+.contextMenu {
+  position: absolute;
+  /* opacity: 0; */
+  width: 180px;
+  min-height: 180px;
+  background: black;
+  height: auto;
+  list-style-type: none;
+  visibility: collapse;
+  display: none;
+}
+
+.contextMenu--element {
+}

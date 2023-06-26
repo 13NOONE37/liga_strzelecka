@@ -1,0 +1,10 @@
+.container {
+  background-color: #222131;
+  width: 100%;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+.main {
+  padding: 30px;
+}

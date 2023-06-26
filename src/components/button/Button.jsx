@@ -16,10 +16,12 @@ export default function DefaultButton({
   disabled,
   isLoading,
   params,
+  additionalClasses = [],
 }) {
-  const buttonClasses = cx(styles.button, {
+  const buttonClasses = cx(styles.button, ...additionalClasses, {
     [styles[`button__offset__${iconPosition}`]]: iconPosition,
     [styles[`button__disabled`]]: disabled,
+    [styles['button__loading']]: isLoading,
     [styles[`button__${size}`]]: size,
     [styles[`button__${style}`]]: style,
   });
@@ -48,6 +50,35 @@ export default function DefaultButton({
   );
 }
 
-// export function IconButton({}) {
-//   return <button></button>;
-// }
+export function IconButton({
+  style, //primary or secondary default is primary
+  Icon,
+  type,
+  action,
+  size, //big, medium or small default is big
+  customSize,
+  disabled,
+  isLoading,
+  params,
+  additionalClasses = [],
+}) {
+  const buttonClasses = cx(styles['iconButton'], ...additionalClasses, {
+    [styles[`iconButton__disabled`]]: disabled,
+    [styles['iconButton__loading']]: isLoading,
+
+    [styles[`iconButton__${size}`]]: size,
+    [styles[`iconButton__${style}`]]: style,
+  });
+  return (
+    <button
+      className={buttonClasses}
+      onClick={action}
+      type={type}
+      disabled={disabled}
+      style={customSize ?? {}}
+      {...params}
+    >
+      {isLoading ? <Load className={styles.loading} /> : <Icon />}
+    </button>
+  );
+}
