@@ -1,18 +1,154 @@
 .container {
   position: relative;
 }
-
 .contextMenu {
   position: absolute;
-  /* opacity: 0; */
-  width: 180px;
-  min-height: 180px;
-  background: black;
-  height: auto;
+  z-index: 999;
+
+  background: #222131;
+  box-shadow: 0 0 0 3px hsl(244, 15%, 20%);
+  border-radius: 10px;
+
   list-style-type: none;
   visibility: collapse;
+}
+.contextMenu::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  border-style: solid;
+  border-color: transparent;
+  border-width: 20px;
+}
+
+.contextMenu__left {
+  right: calc(100% + 20px);
+  top: calc(-100% - 25px);
+}
+.contextMenu__left::before {
+  left: 100%;
+  top: 50%;
+  transform: translate(0, -50%);
+
+  border-left-color: #222131;
+  border-right-width: 0px;
+}
+
+.contextMenu__bottom {
+  left: calc(-100% - 27px);
+  top: calc(100% + 8px);
+}
+.contextMenu__bottom::before {
+  left: 50%;
+  top: -20px;
+  transform: translate(-50%, 0);
+
+  border-bottom-color: #222131;
+  border-top-width: 0px;
+}
+
+.contextMenu__right {
+  left: calc(100% + 20px);
+  top: calc(-100% - 25px);
+}
+.contextMenu__right::before {
+  right: 100%;
+  top: 50%;
+  transform: translate(0, -50%);
+
+  border-right-color: #222131;
+  border-left-width: 0px;
+}
+
+.contextMenu__top {
+  left: calc(-100% - 27px);
+  bottom: calc(100% + 12px);
+}
+.contextMenu__top::before {
+  /* content: none; */
+  left: 50%;
+  bottom: -20px;
+  transform: translate(-50%, 0);
+
+  border-top-color: #222131;
+  border-bottom-width: 0px;
+}
+
+.contextMenu__top {
+  display: none;
+}
+.contextMenu__top::before {
   display: none;
 }
 
-.contextMenu--element {
+.contextMenu__active {
+  visibility: visible;
+}
+
+.contextMenu--element button {
+  cursor: pointer;
+
+  background-color: transparent;
+  border: none;
+  outline: none;
+
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 16px;
+
+  font-family: DM Sans;
+  color: #fff;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+
+  width: 100%;
+  padding: 10px 24px;
+
+  border-bottom: 3px solid hsl(244, 15%, 20%);
+
+  transition: color 0.1s, background-color 0.1s;
+  transition-timing-function: ease-in;
+}
+.contextMenu--element svg {
+  fill: #fff;
+  height: 24px;
+  width: 24px;
+  transition: fill 0.1s ease-in;
+}
+
+.contextMenu--element button:hover {
+  color: #605cff;
+}
+.contextMenu--element button:hover svg {
+  fill: #605cff;
+}
+.contextMenu--element button:focus {
+  color: #605cff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.contextMenu--element button:focus svg {
+  fill: #605cff;
+}
+.contextMenu--element button:active {
+  background-color: transparent;
+  color: #302aff;
+}
+.contextMenu--element button:active svg {
+  fill: #302aff;
+}
+.contextMenu--element button:disabled {
+  cursor: default;
+  color: #33315f;
+}
+.contextMenu--element button:disabled svg {
+  fill: #33315f;
+}
+
+.contextMenu--element:first-child button {
+  border-radius: 10px 10px 0 0;
+}
+.contextMenu--element:last-child button {
+  border: none;
+  border-radius: 0 0 10px 10px;
 }

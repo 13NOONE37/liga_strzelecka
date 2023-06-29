@@ -21,14 +21,14 @@ export default function Auth() {
         <form onSubmit={handleSubmit}>
           <DefaultButton
             text={'Button'}
-            Icon={() => <ArrowIcon />}
+            icon={<ArrowIcon />}
             iconPosition={'left'}
             style={'secondary'}
             // disabled={true}
           />
           <DefaultButton
             text={'Button'}
-            Icon={() => <ArrowIcon />}
+            icon={<ArrowIcon />}
             iconPosition={'left'}
             style={'text'}
             // disabled={true}
@@ -36,19 +36,15 @@ export default function Auth() {
           />
           <DefaultButton
             text={'Button'}
-            Icon={() => <ArrowIcon />}
+            icon={<ArrowIcon />}
             isLoading={true}
             // disabled={true}
             iconPosition={'right'}
           />
           <DefaultButton text={'Button'} isLoading={true} />
+          <IconButton icon={<ArrowIcon />} isLoading={!true} disabled={true} />
           <IconButton
-            Icon={() => <ArrowIcon />}
-            isLoading={!true}
-            disabled={true}
-          />
-          <IconButton
-            Icon={() => <ArrowIcon />}
+            icon={<ArrowIcon />}
             style={'secondary'}
             isLoading={!true}
             disabled={true}
@@ -64,7 +60,7 @@ export default function Auth() {
           />
           <Input
             heading="Podaj hasło"
-            Icon={() =>
+            icon={
               isVisible ? (
                 <button
                   onClick={() => setisVisible(false)}
@@ -112,7 +108,7 @@ export default function Auth() {
           />
           <Input
             heading="Podaj hasło"
-            Icon={() =>
+            icon={
               isVisible ? (
                 <button
                   onClick={() => setisVisible(false)}

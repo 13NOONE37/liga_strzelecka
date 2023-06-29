@@ -18,7 +18,7 @@ export default function ConfirmModal({
       {(handlePreClose) => (
         <div className={styles.container}>
           <IconButton
-            Icon={() => <CloseIcon />}
+            icon={<CloseIcon />}
             size={'medium'}
             additionalClasses={[styles.close]}
             action={handlePreClose}

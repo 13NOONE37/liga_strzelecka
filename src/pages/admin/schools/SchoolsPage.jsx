@@ -21,7 +21,7 @@ export default function SchoolsPage() {
         <h1>Lista szkół</h1>
         <DefaultButton
           text={'Dodaj nową'}
-          Icon={() => <AddIcon />}
+          icon={<AddIcon />}
           size={'medium'}
           iconPosition={'right'}
         />

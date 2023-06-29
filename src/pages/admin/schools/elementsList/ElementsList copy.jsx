@@ -71,7 +71,7 @@ export default function ElementsList({ data, setData }) {
           <DefaultButton
             style={'text'}
             size={'small'}
-            Icon={() => <DropDownIcon />}
+            icon={<DropDownIcon />}
             iconPosition={'right'}
             text={'Id'}
             action={() => {
@@ -91,7 +91,7 @@ export default function ElementsList({ data, setData }) {
           <DefaultButton
             style={'text'}
             size={'small'}
-            Icon={() => <DropDownIcon />}
+            icon={<DropDownIcon />}
             iconPosition={'right'}
             text={'Nazwa'}
             action={() => {
@@ -106,7 +106,7 @@ export default function ElementsList({ data, setData }) {
           <IconButton
             size={'small'}
             style={'secondary'}
-            Icon={() => <DeleteIcon />}
+            icon={<DeleteIcon />}
           />
         </li>
       </ul>

@@ -7,7 +7,7 @@ import { ReactComponent as Load } from '../../assets/icons/load.svg';
 export default function DefaultButton({
   style, //primary, secondary, text default is primary
   text,
-  Icon,
+  icon,
   iconPosition, //left or right
   type,
   action,
@@ -34,17 +34,9 @@ export default function DefaultButton({
       style={customSize ?? {}}
       {...params}
     >
-      {Icon ? (
-        isLoading ? (
-          <Load className={styles.loading} />
-        ) : (
-          <Icon />
-        )
-      ) : (
-        <></>
-      )}
+      {icon ? isLoading ? <Load className={styles.loading} /> : icon : <></>}
       <span>
-        {!Icon && isLoading ? <Load className={styles.loading} /> : text}
+        {!icon && isLoading ? <Load className={styles.loading} /> : text}
       </span>
     </button>
   );
@@ -52,7 +44,7 @@ export default function DefaultButton({
 
 export function IconButton({
   style, //primary or secondary default is primary
-  Icon,
+  icon,
   type,
   action,
   size, //big, medium or small default is big
@@ -78,7 +70,7 @@ export function IconButton({
       style={customSize ?? {}}
       {...params}
     >
-      {isLoading ? <Load className={styles.loading} /> : <Icon />}
+      {isLoading ? <Load className={styles.loading} /> : icon}
     </button>
   );
 }

@@ -16,27 +16,27 @@ export default function AdminSidebar() {
     {
       path: '/admin/results',
       name: 'Wyniki',
-      Icon: () => <Timeline />,
+      icon: <Timeline />,
     },
     {
       path: '/admin/competitions',
       name: 'Zawody',
-      Icon: () => <Trophy />,
+      icon: <Trophy />,
     },
     {
       path: '/admin/shooters',
       name: 'Strzelcy',
-      Icon: () => <Face />,
+      icon: <Face />,
     },
     {
       path: '/admin/schools',
       name: 'Szkoły',
-      Icon: () => <School />,
+      icon: <School />,
     },
     {
       path: '/admin/help',
       name: 'Pomoc',
-      Icon: () => <Help />,
+      icon: <Help />,
     },
   ];
 
@@ -62,7 +62,7 @@ export default function AdminSidebar() {
   return (
     <aside className={styles.sidebar}>
       <div className={styles['sidebar--welcome']}>
-        <h3>Witaj, {`Oliwer`}</h3>
+        <h3>Witaj {`Oliwer`}</h3>
       </div>
       <nav className={styles['sidebar--nav']}>
         <ul ref={listRef}>
@@ -76,7 +76,7 @@ export default function AdminSidebar() {
                     item.path === defaultPathname,
                 })}
               >
-                <item.Icon />
+                {item.icon}
                 {item.name}
               </NavLink>
             </li>
@@ -95,7 +95,7 @@ export default function AdminSidebar() {
         <DefaultButton
           text={'Wyloguj się'}
           style={'text'}
-          Icon={() => <Logout />}
+          icon={<Logout />}
           iconPosition={'right'}
           size={'medium'}
           action={() => {}}

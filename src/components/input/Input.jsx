@@ -8,7 +8,7 @@ import { ReactComponent as ErrorIcon } from '../../assets/icons/error.svg';
 
 export default function Input({
   heading,
-  Icon,
+  icon,
   iconPosition, //left or right
   type,
   placeholder,
@@ -57,11 +57,7 @@ export default function Input({
           disabled={disabled}
           {...params}
         />
-        {Icon && (
-          <span className={styles['input--icon']}>
-            <Icon />
-          </span>
-        )}
+        {icon && <span className={styles['input--icon']}>{icon}</span>}
       </div>
       {status && (
         <span className={`${styles['status']} ${styles[`status__${status}`]}`}>

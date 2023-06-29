@@ -35,15 +35,12 @@ export default function ElementsList({ data, setData }) {
   );
 
   const handleSelectAll = () => {
-    let newCheckedList = elementsState.checkedList;
-    newCheckedList = newCheckedList.map((i) => ({
-      id: i.id,
-      checked: !newCheckedList.every((value) => value.checked),
+    const newCheckedList = elementsState.checkedList.map((item) => ({
+      id: item.id,
+      checked: !elementsState.checkedList.every((value) => value.checked),
     }));
 
-    setElementsState({
-      checkedList: newCheckedList,
-    });
+    setElementsState({ checkedList: newCheckedList });
   };
   const handleSort = (data) => {
     filterArrayOfObjects(data, 'id', 'asc');
@@ -67,26 +64,24 @@ export default function ElementsList({ data, setData }) {
     let newData = data;
 
     if (id) {
-      //we delete item of given id
+      // Delete item of the given id
       newData = newData.filter((item) => item.id !== id);
     } else {
-      //we delete all checked items
+      // Delete all checked items
       newData = newData.filter(
-        (item) =>
-          newCheckedList.find((i) => i.id === item.id).checked === false,
+        (item) => !newCheckedList.find((i) => i.id === item.id).checked,
       );
     }
 
-    newCheckedList = new Array(
-      ...newData.map((item) => ({
-        id: item.id,
-        checked: false,
-      })),
-    );
+    newCheckedList = newData.map((item) => ({
+      id: item.id,
+      checked: false,
+    }));
 
     setData(newData);
     setElementsState({ checkedList: newCheckedList, showDeleteModal: false });
   };
+
   //  more button https://dribbble.com/shots/17694958-Music-App
   //należąłoby zastować inteligentną pozycję tj jesli brakuje miejsca po prawej to się lekko przesunie w lewo itd.
 
@@ -97,7 +92,7 @@ export default function ElementsList({ data, setData }) {
       <ul className={styles.nav}>
         <li className={styles['nav--element']}>
           <Checkbox
-            checked={elementsState.checkedList.every((value) => value.checked)}
+            checked={elementsState.checkedList.every(({ checked }) => checked)}
             onChange={handleSelectAll}
           />
         </li>
@@ -110,7 +105,7 @@ export default function ElementsList({ data, setData }) {
           <DefaultButton
             style={'text'}
             size={'small'}
-            Icon={() => <DropDownIcon />}
+            icon={<DropDownIcon />}
             iconPosition={'right'}
             text={'Id'}
             action={() => {
@@ -130,7 +125,7 @@ export default function ElementsList({ data, setData }) {
           <DefaultButton
             style={'text'}
             size={'small'}
-            Icon={() => <DropDownIcon />}
+            icon={<DropDownIcon />}
             iconPosition={'right'}
             text={'Nazwa'}
             action={() => {
@@ -145,45 +140,74 @@ export default function ElementsList({ data, setData }) {
           <IconButton
             size={'small'}
             style={'secondary'}
-            Icon={() => <DeleteIcon />}
+            icon={<DeleteIcon />}
             action={() => {
               setElementsState({ showDeleteModal: true });
             }}
             disabled={elementsState.checkedList.every(
-              (i) => i.checked === false,
+              ({ checked }) => !checked,
             )}
           />
         </li>
       </ul>
       <FlipMove className={styles.elements} duration={300} delay={50}>
-        {handleSort(data).map((item, index) => (
-          <div className={styles.element} key={item.id}>
-            <Checkbox
-              checked={
-                elementsState.checkedList.find((i) => i.id === item.id).checked
+        {handleSort(data).map((item, index) => {
+          const checkedItem = elementsState.checkedList.find(
+            (i) => i.id === item.id,
+          );
+          const handleCheckboxChange = () => {
+            const newCheckedList = elementsState.checkedList.map((i) => {
+              if (i.id === item.id) {
+                return { ...i, checked: !i.checked };
               }
-              onChange={() => {
-                let newCheckedList = elementsState.checkedList;
-                const index = newCheckedList.findIndex((i) => i.id === item.id);
-                newCheckedList[index].checked = !newCheckedList[index].checked;
-                setElementsState({
-                  checkedList: newCheckedList,
-                });
-              }}
-            />
-            <span>{item.id}</span> <span>{item.name}</span>
-            <ContextMenu
-              options={[
-                { Icon: () => <EditIcon />, text: 'Edytuj', action: () => {} },
-                { Icon: () => <DeleteIcon />, text: 'Usuń', action: () => {} },
-              ]}
-            >
-              <button className={styles['element--more']}>
-                <MoreIcon />
-              </button>
-            </ContextMenu>
-          </div>
-        ))}
+              return i;
+            });
+
+            setElementsState({
+              checkedList: newCheckedList,
+            });
+          };
+
+          return (
+            <div className={styles.element} key={item.id}>
+              <Checkbox
+                checked={checkedItem.checked}
+                onChange={handleCheckboxChange}
+              />
+              <span>{item.id}</span> <span>{item.name}</span>
+              <ContextMenu
+                options={[
+                  {
+                    icon: <EditIcon />,
+                    text: 'Edytuj',
+                    action: () => {},
+                  },
+                  {
+                    icon: <DeleteIcon />,
+                    text: 'Usuń',
+                    action: () => {},
+                  },
+                  {
+                    icon: <DeleteIcon />,
+                    text: 'Alanik',
+                    action: () => {},
+                    disabled: true,
+                  },
+                ]}
+              >
+                {(setActive, ref) => (
+                  <button
+                    className={styles['element--more']}
+                    onClick={setActive}
+                    ref={ref}
+                  >
+                    <MoreIcon />
+                  </button>
+                )}
+              </ContextMenu>
+            </div>
+          );
+        })}
       </FlipMove>
       {elementsState.showDeleteModal && (
         <ConfirmModal
@@ -192,11 +216,12 @@ export default function ElementsList({ data, setData }) {
               {data.map((item) => {
                 const isChecked = elementsState.checkedList.find(
                   (i) => i.id === item.id,
-                ).checked;
+                )?.checked;
 
                 if (isChecked) {
                   return <li key={item.id}>{item.name}</li>;
                 }
+                return null;
               })}
             </ul>
           }
