@@ -15,9 +15,7 @@ export default function ContextMenu({ options, children }) {
   });
   //kiedy focusa nie ma na żadnym z tych elementów musimy zamknąć
   const handleResize = () => {
-    console.log('f');
     if (!active) return;
-    console.log('fa');
 
     const buttonRect = buttonRef.current.getBoundingClientRect();
     const contextRect = contextRef.current.getBoundingClientRect();
@@ -41,6 +39,7 @@ export default function ContextMenu({ options, children }) {
     ) {
       //BOTTOM CENTER
       setPosition('bottom');
+      console.log('1');
     } else if (
       width + TRIANGLE_SIZE <= OFFSET_LEFT &&
       height / 2 <= OFFSET_TOP &&
@@ -48,6 +47,7 @@ export default function ContextMenu({ options, children }) {
     ) {
       //LEFT CENTER
       setPosition('left');
+      console.log('2');
     } else if (
       width + TRIANGLE_SIZE <= OFFSET_RIGHT &&
       height / 2 <= OFFSET_TOP &&
@@ -55,6 +55,7 @@ export default function ContextMenu({ options, children }) {
     ) {
       //RIGHT CENTER
       setPosition('right');
+      console.log('3');
     } else if (
       width / 2 <= OFFSET_RIGHT &&
       width / 2 <= OFFSET_LEFT &&
@@ -62,6 +63,7 @@ export default function ContextMenu({ options, children }) {
     ) {
       //TOP CENTER
       setPosition('top');
+      console.log('4');
     } else {
       //! NOT Displaying at all because screen is too small
       setPosition('hide');

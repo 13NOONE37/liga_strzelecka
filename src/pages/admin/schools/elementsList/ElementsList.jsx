@@ -187,12 +187,6 @@ export default function ElementsList({ data, setData }) {
                     text: 'Usuń',
                     action: () => {},
                   },
-                  {
-                    icon: <DeleteIcon />,
-                    text: 'Alanik',
-                    action: () => {},
-                    disabled: true,
-                  },
                 ]}
               >
                 {(setActive, ref) => (

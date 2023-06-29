@@ -1,5 +1,6 @@
 .container {
   position: relative;
+  height: 26px;
 }
 .contextMenu {
   position: absolute;
@@ -23,7 +24,8 @@
 
 .contextMenu__left {
   right: calc(100% + 20px);
-  top: calc(-100% - 25px);
+  top: 50%;
+  transform: translateY(-50%);
 }
 .contextMenu__left::before {
   left: 100%;
@@ -49,7 +51,8 @@
 
 .contextMenu__right {
   left: calc(100% + 20px);
-  top: calc(-100% - 25px);
+  top: 50%;
+  transform: translateY(-50%);
 }
 .contextMenu__right::before {
   right: 100%;
