@@ -52,6 +52,13 @@
   font-size: 14px;
   color: #ffffff;
 }
+.element span {
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  padding-right: 10px;
+}
 .element--more {
   cursor: pointer;
   background-color: transparent;

@@ -15,8 +15,8 @@ export default function DefaultButton({
   customSize,
   disabled,
   isLoading,
-  params,
   additionalClasses = [],
+  ...params
 }) {
   const buttonClasses = cx(styles.button, ...additionalClasses, {
     [styles[`button__offset__${iconPosition}`]]: iconPosition,

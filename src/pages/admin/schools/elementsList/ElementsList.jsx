@@ -1,4 +1,4 @@
-import React, { useReducer, useRef, useState } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import FlipMove from 'react-flip-move';
 import cx from 'classnames';
 
@@ -16,21 +16,23 @@ import DefaultButton, {
 import filterArrayOfObjects from '../../../../utils/filterArrayOfObjects';
 import ConfirmModal from '../../../../components/modal/RTUComponents/ConfirmModal/ConfirmModal';
 import ContextMenu from '../../../../components/contextMenu/ContextMenu';
+import Skeleton from '../../../../components/skeletonLoading/Skeleton';
 
-export default function ElementsList({ data, setData }) {
+export default function ElementsList({
+  isLoading,
+  data,
+  setData,
+  setIsEditing,
+}) {
   const [elementsState, setElementsState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
       showDeleteModal: false,
       sortBy: undefined,
-      idSortDesc: undefined,
+      indexSortDesc: undefined,
       nameSortDesc: undefined,
-      checkedList: new Array(
-        ...data.map((item) => ({
-          id: item.id,
-          checked: false,
-        })),
-      ),
+      checkedList: [],
+      toDeleteId: undefined,
     },
   );
 
@@ -44,17 +46,15 @@ export default function ElementsList({ data, setData }) {
   };
   const handleSort = (data) => {
     filterArrayOfObjects(data, 'id', 'asc');
-
-    if (elementsState.idSortDesc) {
-      return filterArrayOfObjects(data, 'id', 'desc');
-    } else if (elementsState.idSortDesc === false) {
-      return filterArrayOfObjects(data, 'id', 'asc');
-    }
-
     if (elementsState.nameSortDesc) {
       return filterArrayOfObjects(data, 'name', 'desc');
     } else if (elementsState.nameSortDesc === false) {
       return filterArrayOfObjects(data, 'name', 'asc');
+    }
+    if (elementsState.indexSortDesc) {
+      return filterArrayOfObjects(data, 'index', 'desc');
+    } else if (elementsState.indexSortDesc === false) {
+      return filterArrayOfObjects(data, 'index', 'asc');
     }
 
     return data;
@@ -66,40 +66,64 @@ export default function ElementsList({ data, setData }) {
     if (id) {
       // Delete item of the given id
       newData = newData.filter((item) => item.id !== id);
+      newCheckedList = newData.map((item) => {
+        let temp = {
+          id: item.id,
+          checked: newCheckedList.find((i) => i.id === item.id).checked,
+        };
+        if (item.id === id) temp.checked = false;
+
+        return temp;
+      });
     } else {
       // Delete all checked items
       newData = newData.filter(
         (item) => !newCheckedList.find((i) => i.id === item.id).checked,
       );
+      newCheckedList = newData.map((item) => ({
+        id: item.id,
+        checked: false,
+      }));
     }
 
-    newCheckedList = newData.map((item) => ({
-      id: item.id,
-      checked: false,
-    }));
-
     setData(newData);
-    setElementsState({ checkedList: newCheckedList, showDeleteModal: false });
+    setElementsState({
+      checkedList: newCheckedList,
+      showDeleteModal: false,
+      toDeleteId: undefined,
+    });
   };
 
-  //  more button https://dribbble.com/shots/17694958-Music-App
-  //należąłoby zastować inteligentną pozycję tj jesli brakuje miejsca po prawej to się lekko przesunie w lewo itd.
-
-  // skeleton component stworzymy własny uniwersalny komponent z animacją ładowania, ale będzie można ją też jakoś łatwo zmienić
+  useEffect(() => {
+    setElementsState({
+      checkedList: new Array(
+        ...data.map((item) => ({
+          id: item.id,
+          checked:
+            elementsState.checkedList.find((i) => i.id === item.id)?.checked ??
+            false,
+        })),
+      ),
+    });
+  }, [data]);
 
   return (
     <div className={styles.container}>
       <ul className={styles.nav}>
         <li className={styles['nav--element']}>
           <Checkbox
-            checked={elementsState.checkedList.every(({ checked }) => checked)}
+            checked={
+              elementsState.checkedList.length > 0 &&
+              elementsState.checkedList.every(({ checked }) => checked)
+            }
             onChange={handleSelectAll}
+            disabled={elementsState.checkedList.length === 0}
           />
         </li>
         <li
           className={cx(styles['nav--element'], {
-            [styles['desc-dropdown']]: !elementsState.idSortDesc,
-            [styles['asc-dropdown']]: elementsState.idSortDesc,
+            [styles['desc-dropdown']]: !elementsState.indexSortDesc,
+            [styles['asc-dropdown']]: elementsState.indexSortDesc,
           })}
         >
           <DefaultButton
@@ -107,13 +131,14 @@ export default function ElementsList({ data, setData }) {
             size={'small'}
             icon={<DropDownIcon />}
             iconPosition={'right'}
-            text={'Id'}
+            text={'Lp.'}
             action={() => {
               setElementsState({
-                idSortDesc: !elementsState.idSortDesc,
+                indexSortDesc: !elementsState.indexSortDesc,
                 nameSortDesc: undefined,
               });
             }}
+            disabled={elementsState.checkedList.length === 0}
           />
         </li>
         <li
@@ -130,10 +155,11 @@ export default function ElementsList({ data, setData }) {
             text={'Nazwa'}
             action={() => {
               setElementsState({
-                idSortDesc: undefined,
+                indexSortDesc: undefined,
                 nameSortDesc: !elementsState.nameSortDesc,
               });
             }}
+            disabled={elementsState.checkedList.length === 0}
           />
         </li>
         <li className={styles['nav--element']}>
@@ -150,82 +176,114 @@ export default function ElementsList({ data, setData }) {
           />
         </li>
       </ul>
-      <FlipMove className={styles.elements} duration={300} delay={50}>
-        {handleSort(data).map((item, index) => {
-          const checkedItem = elementsState.checkedList.find(
-            (i) => i.id === item.id,
-          );
-          const handleCheckboxChange = () => {
-            const newCheckedList = elementsState.checkedList.map((i) => {
-              if (i.id === item.id) {
-                return { ...i, checked: !i.checked };
-              }
-              return i;
-            });
+      {isLoading ? (
+        <>
+          <div className={styles.elements}>
+            <Skeleton width={'100%'} height={'54px'} />
+            <Skeleton width={'100%'} height={'54px'} />
+            <Skeleton width={'100%'} height={'54px'} />
+            <Skeleton width={'100%'} height={'54px'} />
+            <Skeleton width={'100%'} height={'54px'} />
+            <Skeleton width={'100%'} height={'54px'} />
+          </div>
+        </>
+      ) : (
+        <FlipMove className={styles.elements} duration={300} delay={50}>
+          {handleSort(data).map((item, index) => {
+            const checkedItem = elementsState.checkedList.find(
+              (i) => i.id === item.id,
+            );
+            const handleCheckboxChange = () => {
+              const newCheckedList = elementsState.checkedList.map((i) => {
+                if (i.id === item.id) {
+                  return { ...i, checked: !i.checked };
+                }
+                return i;
+              });
 
-            setElementsState({
-              checkedList: newCheckedList,
-            });
-          };
+              setElementsState({
+                checkedList: newCheckedList,
+              });
+            };
 
-          return (
-            <div className={styles.element} key={item.id}>
-              <Checkbox
-                checked={checkedItem.checked}
-                onChange={handleCheckboxChange}
-              />
-              <span>{item.id}</span> <span>{item.name}</span>
-              <ContextMenu
-                options={[
-                  {
-                    icon: <EditIcon />,
-                    text: 'Edytuj',
-                    action: () => {},
-                  },
-                  {
-                    icon: <DeleteIcon />,
-                    text: 'Usuń',
-                    action: () => {},
-                  },
-                ]}
-              >
-                {(setActive, ref) => (
-                  <button
-                    className={styles['element--more']}
-                    onClick={setActive}
-                    ref={ref}
-                  >
-                    <MoreIcon />
-                  </button>
-                )}
-              </ContextMenu>
-            </div>
-          );
-        })}
-      </FlipMove>
+            return (
+              <div className={styles.element} key={item.id}>
+                <Checkbox
+                  checked={checkedItem?.checked}
+                  onChange={handleCheckboxChange}
+                />
+                <span>{item.index}</span> <span>{item.name}</span>
+                <ContextMenu
+                  options={[
+                    {
+                      icon: <EditIcon />,
+                      text: 'Edytuj',
+                      action: () => {
+                        setIsEditing(item.id);
+                      },
+                    },
+                    {
+                      icon: <DeleteIcon />,
+                      text: 'Usuń',
+                      action: () => {
+                        setElementsState({
+                          showDeleteModal: true,
+                          toDeleteId: item.id,
+                        });
+                      },
+                    },
+                  ]}
+                >
+                  {(setActive, ref) => (
+                    <button
+                      className={styles['element--more']}
+                      onClick={setActive}
+                      ref={ref}
+                    >
+                      <MoreIcon />
+                    </button>
+                  )}
+                </ContextMenu>
+              </div>
+            );
+          })}
+        </FlipMove>
+      )}
+
       {elementsState.showDeleteModal && (
         <ConfirmModal
           content={
             <ul className={styles.confirmList}>
-              {data.map((item) => {
-                const isChecked = elementsState.checkedList.find(
-                  (i) => i.id === item.id,
-                )?.checked;
+              {elementsState.toDeleteId !== undefined ? (
+                <li>
+                  {data.find((i) => i.id === elementsState.toDeleteId).name}
+                </li>
+              ) : (
+                data.map((item) => {
+                  const isChecked = elementsState.checkedList.find(
+                    (i) => i.id === item.id,
+                  )?.checked;
 
-                if (isChecked) {
-                  return <li key={item.id}>{item.name}</li>;
-                }
-                return null;
-              })}
+                  if (isChecked) {
+                    return <li key={item.id}>{item.name}</li>;
+                  }
+                  return null;
+                })
+              )}
             </ul>
           }
           heading={'Czy na pewno chcesz usunąć wybrane elementy?'}
           secondaryText={'Anuluj'}
           primaryText={'Usuń'}
           handleClose={() => {
-            setElementsState({ showDeleteModal: false });
+            setElementsState({ showDeleteModal: false, toDeleteId: undefined });
           }}
-          handleConfirm={handleDelete}
+          handleConfirm={() => {
+            if (elementsState.toDeleteId) {
+              return handleDelete(elementsState.toDeleteId);
+            }
+            handleDelete();
+          }}
         />
       )}
     </div>

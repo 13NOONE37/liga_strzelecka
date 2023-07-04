@@ -1,7 +1,11 @@
 .container {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 40px;
+  padding: 30px;
+  height: 100%;
+  overflow: hidden auto;
 }
 .header {
   display: flex;
@@ -15,4 +19,20 @@
   color: #ffffff;
 }
 .section {
+  width: 100%;
+  transition: width 0.25s ease-in-out;
+  will-change: width;
+}
+.section__active {
+  width: calc(100% - 400px);
+}
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+.modalContent button {
+  width: 100%;
 }

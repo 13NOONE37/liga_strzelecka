@@ -39,7 +39,7 @@ export default function ContextMenu({ options, children }) {
     ) {
       //BOTTOM CENTER
       setPosition('bottom');
-      console.log('1');
+      // console.log('1');
     } else if (
       width + TRIANGLE_SIZE <= OFFSET_LEFT &&
       height / 2 <= OFFSET_TOP &&
@@ -47,7 +47,7 @@ export default function ContextMenu({ options, children }) {
     ) {
       //LEFT CENTER
       setPosition('left');
-      console.log('2');
+      // console.log('2');
     } else if (
       width + TRIANGLE_SIZE <= OFFSET_RIGHT &&
       height / 2 <= OFFSET_TOP &&
@@ -55,7 +55,7 @@ export default function ContextMenu({ options, children }) {
     ) {
       //RIGHT CENTER
       setPosition('right');
-      console.log('3');
+      // console.log('3');
     } else if (
       width / 2 <= OFFSET_RIGHT &&
       width / 2 <= OFFSET_LEFT &&
@@ -63,9 +63,9 @@ export default function ContextMenu({ options, children }) {
     ) {
       //TOP CENTER
       setPosition('top');
-      console.log('4');
+      // console.log('4');
     } else {
-      //! NOT Displaying at all because screen is too small
+      //NOT Displaying at all because screen is too small
       setPosition('hide');
     }
   };
@@ -89,9 +89,16 @@ export default function ContextMenu({ options, children }) {
         })}
         ref={contextRef}
       >
-        {options.map(({ icon, text, action, disabled }) => (
-          <li className={styles['contextMenu--element']}>
-            <button onClick={action} type="button" disabled={disabled}>
+        {options.map(({ icon, text, action, disabled }, index) => (
+          <li className={styles['contextMenu--element']} key={index}>
+            <button
+              onClick={() => {
+                action();
+                setActive(false);
+              }}
+              type="button"
+              disabled={disabled}
+            >
               {icon}
               {text}
             </button>

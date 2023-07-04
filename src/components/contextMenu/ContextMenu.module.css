@@ -12,6 +12,7 @@
 
   list-style-type: none;
   visibility: collapse;
+  user-select: none;
 }
 .contextMenu::before {
   content: '';

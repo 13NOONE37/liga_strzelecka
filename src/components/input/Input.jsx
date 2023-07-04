@@ -13,11 +13,13 @@ export default function Input({
   type,
   placeholder,
   value,
+  name,
   onChange,
+  onBlur,
   status, // success, warning or error
   statusMessage,
   disabled,
-  params,
+  ...params
 }) {
   const [inputState, setInputState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -51,9 +53,13 @@ export default function Input({
           id={inputState.id}
           type={type}
           value={value}
+          name={name}
           onChange={onChange}
           onFocus={() => setInputState({ isActive: true })}
-          onBlur={() => setInputState({ isActive: false })}
+          onBlur={(e) => {
+            setInputState({ isActive: false });
+            onBlur(e);
+          }}
           disabled={disabled}
           {...params}
         />

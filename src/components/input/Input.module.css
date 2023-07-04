@@ -1,5 +1,4 @@
 .box {
-  margin: 100px;
   display: grid;
   grid-template-rows: auto auto 50px;
 }
