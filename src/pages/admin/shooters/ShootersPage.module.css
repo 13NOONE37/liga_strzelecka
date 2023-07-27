@@ -1,1 +1,58 @@
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 30px;
+  height: 100%;
+  overflow: hidden auto;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header h1 {
+  font-weight: 700;
+  font-size: 24px;
 
+  color: #ffffff;
+}
+.section {
+  width: 100%;
+  transition: width 0.25s ease-in-out;
+  will-change: width;
+}
+@media (min-width: 1480px) {
+  .section__active {
+    width: calc(100% - 500px);
+  }
+}
+.modalContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto 1fr auto;
+  grid-template-areas: 'first second' 'gender gender' 'school school' '_ __' 'add add';
+  grid-gap: 1em;
+  place-items: center;
+  height: 100%;
+}
+.modalContent button {
+  width: 100%;
+  grid-area: add;
+}
+.modalContent--field {
+  width: 100%;
+}
+.modalContent--field__firstName {
+  grid-area: first;
+}
+.modalContent--field__secondName {
+  grid-area: second;
+}
+.modalContent--field__gender {
+  grid-area: gender;
+}
+.modalContent--field__school {
+  grid-area: school;
+}

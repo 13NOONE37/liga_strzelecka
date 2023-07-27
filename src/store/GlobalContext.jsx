@@ -5,5 +5,7 @@ const GlobalContext = createContext({
   setIsLogged: () => {},
   theme: null,
   setTheme: () => {},
+  userInfo: null,
+  setUserInfo: () => {},
 });
 export default GlobalContext;

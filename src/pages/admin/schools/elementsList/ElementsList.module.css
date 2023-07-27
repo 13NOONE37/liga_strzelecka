@@ -22,7 +22,7 @@
   fill: white;
   height: 24px;
   width: 24px;
-  transition: all 0.3s ease-in;
+  transition: transform 0.3s ease-in, fill 0.1s ease-in;
 }
 .asc-dropdown svg {
   transform: rotate(0deg);

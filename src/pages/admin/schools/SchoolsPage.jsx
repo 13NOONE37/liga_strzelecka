@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import cx from 'classnames';
 import { Formik } from 'formik';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,8 +10,12 @@ import styles from './SchoolsPage.module.css';
 import NewModal from '../../../components/modal/RTUComponents/newModal/NewModal';
 import Input from '../../../components/input/Input';
 import AnimatedPage from '../../../components/animatedPage/AnimatedPage';
+import GlobalContext from '../../../store/GlobalContext';
+import axios from 'axios';
 
 export default function SchoolsPage() {
+  const { schools, setSchools } = useContext(GlobalContext);
+
   //!!todo trzeba zabezpieczyć usuwanie szkół komunikatem w przypadku gdy do danej szkoły są przypisanie uczniowie
   //!!todo np. aby usunąć szkołę należy wpierw usunąć przypisanych uczniów
 
@@ -108,30 +112,54 @@ export default function SchoolsPage() {
 
   useEffect(() => {
     const fetchSchools = async () => {
-      await new Promise((res, req) => setTimeout(() => res(), 2000));
+      try {
+        const data = await axios.post(
+          'http://localhost/liga_strzelecka/api.php',
+          {
+            action: 'getSchools',
+          },
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          },
+        );
+        data.map((item, index) => {
+          console.log(item, index);
+        });
+      } catch (error) {
+        console.log(error);
+      }
+      // await new Promise((res, req) => setTimeout(() => res(), 2000));
 
-      let fetchedData = [
-        { id: 1, name: 'Szkoła Podstawowa nr 1' },
-        { id: 2, name: 'Gimnazjum im. Jana Kowalskiego' },
-        { id: 3, name: 'Liceum Ogólnokształcące nr 5' },
-        { id: 4, name: 'Szkoła Artystyczna dla Młodych Talentów' },
-        { id: 5, name: 'Technikum Elektryczne im. Marii Skłodowskiej-Curie' },
-        { id: 6, name: 'Szkoła Podstawowa nr 3' },
-      ];
+      // //todo check error
 
-      //Below the ordinal number is applied
-      fetchedData = fetchedData.map((item, index) => {
-        item.index = index + 1;
-        return item;
-      });
+      // let fetchedData = [
+      //   { id: 1, name: 'Szkoła Podstawowa nr 1' },
+      //   { id: 2, name: 'Gimnazjum im. Jana Kowalskiego' },
+      //   { id: 3, name: 'Liceum Ogólnokształcące nr 5' },
+      //   { id: 4, name: 'Szkoła Artystyczna dla Młodych Talentów' },
+      //   { id: 5, name: 'Technikum Elektryczne im. Marii Skłodowskiej-Curie' },
+      //   { id: 6, name: 'Szkoła Podstawowa nr 3' },
+      // ];
 
-      setSchoolState({
-        isLoading: false,
-        schools: fetchedData,
-      });
+      // //Below the ordinal number is applied
+      // fetchedData = fetchedData.map((item, index) => {
+      //   item.index = index + 1;
+      //   return item;
+      // });
+
+      // setSchools(fetchedData);
+      // setSchoolState({
+      //   isLoading: false,
+      // });
     };
 
-    fetchSchools();
+    if (schools === null) {
+      fetchSchools();
+    } else {
+      setSchoolState({ isLoading: false });
+    }
   }, []);
 
   return (
@@ -140,7 +168,7 @@ export default function SchoolsPage() {
         <header className={styles.header}>
           <h1>Lista szkół</h1>
           <DefaultButton
-            text={'Dodaj nową'}
+            text={'Dodaj'}
             icon={<AddIcon />}
             size={'medium'}
             iconPosition={'right'}
@@ -202,16 +230,18 @@ export default function SchoolsPage() {
                   isSubmitting,
                 }) => (
                   <form onSubmit={handleSubmit} className={styles.modalContent}>
-                    <Input
-                      heading={'Podaj nazwę szkoły'}
-                      placeholder={'Nazwa szkoły'}
-                      value={values.name}
-                      name={'name'}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      status={errors.name?.status}
-                      statusMessage={errors.name?.message}
-                    />
+                    <div className={styles['modalContent--input']}>
+                      <Input
+                        heading={'Podaj nazwę szkoły'}
+                        placeholder={'Nazwa szkoły'}
+                        value={values.name}
+                        name={'name'}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        status={errors.name?.status}
+                        statusMessage={errors.name?.message}
+                      />
+                    </div>
                     <DefaultButton
                       text={
                         schoolState.editId === undefined

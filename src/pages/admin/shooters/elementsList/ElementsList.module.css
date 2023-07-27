@@ -1,0 +1,22 @@
+.container {
+}
+.nav {
+  grid-template-columns: 75px 100px 100px 150px 1fr auto;
+}
+.element {
+  grid-template-columns: 75px 100px 100px 150px 1fr auto;
+}
+
+.searchNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+.searchNav--select {
+}
+.searchNav--search {
+  width: 300px;
+}
+.searchNav--search > div > div {
+  background-color: #39394b;
+}

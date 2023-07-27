@@ -58,7 +58,7 @@ export default function Input({
           onFocus={() => setInputState({ isActive: true })}
           onBlur={(e) => {
             setInputState({ isActive: false });
-            onBlur(e);
+            onBlur && onBlur(e);
           }}
           disabled={disabled}
           {...params}

@@ -35,5 +35,5 @@
 }
 body {
   font-family: 'DM Sans', sans-serif;
-  overflow: hidden;
+  overflow: hidden auto;
 }

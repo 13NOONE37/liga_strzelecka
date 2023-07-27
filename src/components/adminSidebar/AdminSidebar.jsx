@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import styles from './AdminSidebar.module.css';
 import cx from 'classnames';
 import { ReactComponent as Trophy } from '../../assets/icons/trophy.svg';
@@ -9,8 +9,11 @@ import { ReactComponent as Logout } from '../../assets/icons/logout.svg';
 import { ReactComponent as Help } from '../../assets/icons/help.svg';
 import DefaultButton, { IconButton } from '../button/Button';
 import { NavLink, useLocation } from 'react-router-dom';
+import useLogout from '../../utils/endpoints/useLogout';
+import GlobalContext from '../../store/GlobalContext';
 
 export default function AdminSidebar() {
+  const { setIsLogged, setUserInfo, userInfo } = useContext(GlobalContext);
   const defaultPathname = useLocation().pathname;
   const SIDEBAR_ELEMENTS = [
     {
@@ -62,7 +65,7 @@ export default function AdminSidebar() {
   return (
     <aside className={styles.sidebar}>
       <div className={styles['sidebar--welcome']}>
-        <h3>Witaj {`Oliwer`}</h3>
+        {userInfo && <h3>Witaj {userInfo.login}</h3>}
       </div>
       <nav className={styles['sidebar--nav']}>
         <ul ref={listRef}>
@@ -98,7 +101,9 @@ export default function AdminSidebar() {
           icon={<Logout />}
           iconPosition={'right'}
           size={'medium'}
-          action={() => {}}
+          action={() => {
+            useLogout(setIsLogged, setUserInfo);
+          }}
         />
       </div>
     </aside>

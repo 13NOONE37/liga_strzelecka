@@ -8,15 +8,24 @@ import AuthRoute from '../../pages/routes/AuthRoute';
 import GuestRoute from '../../pages/routes/GuestRoute';
 import Pages from '../../pages/routes/pages';
 import { AnimatePresence } from 'framer-motion';
+import useSession from '../../utils/endpoints/useSession';
+import axios from 'axios';
 
 function App() {
-  const [isLogged, setIsLogged] = useState(true);
-  const [theme, setTheme] = useState(
-    window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: light)').matches
-      ? 'lightMode'
-      : 'darkMode',
-  );
+  axios.defaults.withCredentials = true; //We need to enable it for session support
+
+  const [isLogged, setIsLogged] = useState(false);
+  const [theme, setTheme] = useState('darkMode');
+  const [userInfo, setUserInfo] = useState(null);
+  // const [theme, setTheme] = useState(
+  //   window.matchMedia &&
+  //     window.matchMedia('(prefers-color-scheme: light)').matches
+  //     ? 'lightMode'
+  //     : 'darkMode',
+  // );
+
+  useSession(setIsLogged, setUserInfo);
+
   return (
     <div className={theme}>
       <GlobalContext.Provider
@@ -25,6 +34,8 @@ function App() {
           setIsLogged,
           theme,
           setTheme,
+          userInfo,
+          setUserInfo,
         }}
       >
         {/* second context will be in dashboard parent element to be only in admin mode */}
