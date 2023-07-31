@@ -10,32 +10,26 @@ import styles from './SchoolsPage.module.css';
 import NewModal from '../../../components/modal/RTUComponents/newModal/NewModal';
 import Input from '../../../components/input/Input';
 import AnimatedPage from '../../../components/animatedPage/AnimatedPage';
-import GlobalContext from '../../../store/GlobalContext';
-import axios from 'axios';
+import DataContext from '../../../store/DataContext';
+import fetchData from '../../../utils/fetchData';
 
 export default function SchoolsPage() {
-  const { schools, setSchools } = useContext(GlobalContext);
-
-  //!!todo trzeba zabezpieczyć usuwanie szkół komunikatem w przypadku gdy do danej szkoły są przypisanie uczniowie
-  //!!todo np. aby usunąć szkołę należy wpierw usunąć przypisanych uczniów
-
+  const { schools, setSchools } = useContext(DataContext);
   const [schoolState, setSchoolState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
-      isLoading: true,
       showModal: false,
       preShowModal: false,
-      schools: [],
       editId: undefined,
     },
   );
-
   const formInitialValues = {
     name:
       schoolState.editId === undefined
         ? ''
-        : schoolState.schools.find((i) => i.id === schoolState.editId).name,
+        : schools.find((i) => i.school_id === schoolState.editId).name,
   };
+
   const handleValidate = (values) => {
     const errors = {};
     if (!values.name) {
@@ -48,7 +42,7 @@ export default function SchoolsPage() {
         status: 'warning',
         message: 'Nazwa nie może być pusta',
       };
-    } else if (schoolState.schools.find((i) => i.name === values.name)) {
+    } else if (schools.find((i) => i.name.trim() === values.name.trim())) {
       errors.name = {
         status: 'warning',
         message: 'Taka szkoła już istnieje',
@@ -56,110 +50,92 @@ export default function SchoolsPage() {
     }
     return errors;
   };
-  const handleSubmitAdd = async (values, { setSubmitting }) => {
-    const newSchools = [...schoolState.schools];
-    const id = uuidv4();
-    newSchools.push({
-      id: id,
-      name: values.name,
-      index: newSchools.length + 1,
-    });
+  const handleSubmitAdd = async (values, { setSubmitting, setErrors }) => {
+    try {
+      const newSchools = [...schools];
+      const id = uuidv4();
+      newSchools.push({
+        school_id: id,
+        name: values.name,
+        index: newSchools.length + 1,
+        visible: true,
+        checked: false,
+      });
 
-    await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log('backend...💭💭💭');
-        resolve();
-      }, 1500);
-    });
-    //!we need to make api callback and put school database
-    //! if it returns some error we stop executing code here
-    //!and error is displayed in notification
+      const { status } = await fetchData({
+        action: 'createSchool',
+        school_id: id,
+        name: values.name,
+      });
 
-    setSchoolState({
-      schools: newSchools,
-      showModal: false,
-      preShowModal: false,
-    });
+      //Only if fetch is success✅
+      if (status === 200) {
+        setSchoolState({
+          preShowModal: false,
+        });
+        setSchools(newSchools);
+      }
+    } catch (error) {
+      setErrors({
+        name: {
+          status: 'error',
+          message:
+            error.response.status === 409
+              ? 'Taka szkoła już istnieje'
+              : 'Coś poszło nie tak. Spróbuj ponownie.',
+        },
+      });
+    }
+
     setSubmitting(false);
   };
   const handleSubmitUpdate = async (values, { setSubmitting }) => {
-    const newSchools = [...schoolState.schools].map((i) => {
-      if (i.id === schoolState.editId) {
-        i.name = values.name;
+    try {
+      const { status } = await fetchData({
+        action: 'updateSchool',
+        school_id: schoolState.editId,
+        name: values.name,
+      });
+
+      //Only if fetch is success✅
+      if (status === 200) {
+        setSchoolState({
+          preShowModal: false,
+        });
+        setSchools((prev) =>
+          prev.map((item) => {
+            if (item.school_id === schoolState.editId) {
+              return {
+                ...item,
+                name: values.name,
+              };
+            }
+            return item;
+          }),
+        );
       }
+    } catch (error) {
+      setErrors({
+        name: {
+          status: 'error',
+          message: 'Coś poszło nie tak. Spróbuj ponownie.',
+        },
+      });
+    }
 
-      return i;
-    });
-
-    await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log('backend...💭💭💭');
-        resolve();
-      }, 1500);
-    });
-    // //!we need to make api callback and put school database
-    // //! if it returns some error we stop executing code here
-    // //!and error is displayed in notification
-
-    setSchoolState({
-      schools: newSchools,
-      showModal: false,
-      preShowModal: false,
-      editId: undefined,
-    });
     setSubmitting(false);
   };
 
   useEffect(() => {
-    const fetchSchools = async () => {
-      try {
-        const data = await axios.post(
-          'http://localhost/liga_strzelecka/api.php',
-          {
-            action: 'getSchools',
-          },
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          },
-        );
-        data.map((item, index) => {
-          console.log(item, index);
-        });
-      } catch (error) {
-        console.log(error);
-      }
-      // await new Promise((res, req) => setTimeout(() => res(), 2000));
-
-      // //todo check error
-
-      // let fetchedData = [
-      //   { id: 1, name: 'Szkoła Podstawowa nr 1' },
-      //   { id: 2, name: 'Gimnazjum im. Jana Kowalskiego' },
-      //   { id: 3, name: 'Liceum Ogólnokształcące nr 5' },
-      //   { id: 4, name: 'Szkoła Artystyczna dla Młodych Talentów' },
-      //   { id: 5, name: 'Technikum Elektryczne im. Marii Skłodowskiej-Curie' },
-      //   { id: 6, name: 'Szkoła Podstawowa nr 3' },
-      // ];
-
-      // //Below the ordinal number is applied
-      // fetchedData = fetchedData.map((item, index) => {
-      //   item.index = index + 1;
-      //   return item;
-      // });
-
-      // setSchools(fetchedData);
-      // setSchoolState({
-      //   isLoading: false,
-      // });
-    };
-
-    if (schools === null) {
-      fetchSchools();
-    } else {
-      setSchoolState({ isLoading: false });
-    }
+    //Reset visibility and checkmark to default
+    return () =>
+      setSchools((prev) =>
+        prev.map((item) => ({
+          ...item,
+          visible: true,
+          checked: false,
+        })),
+      );
   }, []);
 
   return (
@@ -183,9 +159,8 @@ export default function SchoolsPage() {
           })}
         >
           <ElementsList
-            isLoading={schoolState.isLoading}
-            data={schoolState.schools}
-            setData={(data) => setSchoolState({ schools: data })}
+            data={schools}
+            setData={setSchools}
             setIsEditing={(value) =>
               setSchoolState({
                 editId: value,
@@ -200,6 +175,7 @@ export default function SchoolsPage() {
               setShowModal={(value) =>
                 setSchoolState({ showModal: value, editId: undefined })
               }
+              preShowModal={schoolState.preShowModal}
               setPreShowModal={(value) =>
                 setSchoolState({ preShowModal: value })
               }

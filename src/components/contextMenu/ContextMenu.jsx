@@ -1,23 +1,28 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import cx from 'classnames';
 import styles from './ContextMenu.module.css';
 import { useDetectOutsideClick } from '../../hooks/useDetectOutsideClick';
-export default function ContextMenu({ options, children }) {
+const ContextMenu = forwardRef(({ options, children }, ref) => {
   const [active, setActive] = useState(false);
   const [position, setPosition] = useState('bottom');
 
-  const buttonRef = useRef(null);
   const containerRef = useRef(null);
   const contextRef = useRef(null);
 
   useDetectOutsideClick(containerRef, () => {
     setActive(false);
   });
-  //kiedy focusa nie ma na żadnym z tych elementów musimy zamknąć
+  //todo kiedy focusa nie ma na żadnym z tych elementów musimy zamknąć
   const handleResize = () => {
     if (!active) return;
 
-    const buttonRect = buttonRef.current.getBoundingClientRect();
+    const buttonRect = ref.current.getBoundingClientRect();
     const contextRect = contextRef.current.getBoundingClientRect();
     let { width, height } = contextRect;
 
@@ -82,7 +87,7 @@ export default function ContextMenu({ options, children }) {
 
   return (
     <div className={styles.container} ref={containerRef}>
-      {children(() => setActive(!active), buttonRef)}
+      {children(() => setActive(!active))}
       <ul
         className={cx(styles.contextMenu, styles[`contextMenu__${position}`], {
           [styles['contextMenu__active']]: active,
@@ -107,4 +112,5 @@ export default function ContextMenu({ options, children }) {
       </ul>
     </div>
   );
-}
+});
+export default ContextMenu;

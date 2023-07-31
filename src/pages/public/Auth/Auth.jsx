@@ -50,7 +50,7 @@ export default function Auth() {
       const status = error?.response?.status === 401;
       let message = status
         ? 'Podany login lub hasło jest błędne'
-        : 'Coś poszło nie tak...';
+        : 'Coś poszło nie tak. Spróbuj ponownie.';
 
       setErrors({
         login: {

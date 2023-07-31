@@ -25,14 +25,21 @@ export default function AdminPage() {
   useEffect(() => {
     const getData = async () => {
       try {
+        //Init animation
         setTimeout(() => {
           setLoading((prev) => ({ ...prev, step: 0.25 }));
         }, 0);
 
         //Fetch schools
-        const schools = await getSchools();
-        if (schools.data instanceof Array) {
-          setSchools(schools.data);
+        let schools = await getSchools();
+        schools = schools.data.map((item, index) => {
+          item.index = index + 1;
+          item.checked = false;
+          item.visible = true;
+          return item;
+        });
+        if (schools instanceof Array) {
+          setSchools(schools);
         } else {
           setSchools([]);
         }
@@ -43,13 +50,20 @@ export default function AdminPage() {
         }));
 
         //Fetch shooters
-        const shooters = await getShooters();
-        if (shooters.data instanceof Array) {
-          setShooters(shooters.data);
+        let shooters = await getShooters();
+        shooters = shooters.data.map((item, index) => {
+          item.index = index + 1;
+          item.checked = false;
+          item.visible = true;
+          return item;
+        });
+        if (shooters instanceof Array) {
+          setShooters(shooters);
         } else {
           setShooters([]);
         }
 
+        //Finish animation
         setLoading((prev) => ({ ...prev, step: 1 }));
         setPreIsLoading(false);
       } catch (error) {

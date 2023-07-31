@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import fetchData from '../../fetchData';
 
 const getSchools = async () => {

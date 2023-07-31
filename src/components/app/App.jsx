@@ -10,6 +10,7 @@ import Pages from '../../pages/routes/pages';
 import { AnimatePresence } from 'framer-motion';
 import useSession from '../../utils/endpoints/useSession';
 import axios from 'axios';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   axios.defaults.withCredentials = true; //We need to enable it for session support
@@ -39,6 +40,15 @@ function App() {
         }}
       >
         {/* second context will be in dashboard parent element to be only in admin mode */}
+        <ToastContainer
+          position="bottom-center"
+          hideProgressBar={false}
+          closeOnClick={true}
+          draggable={true}
+          pauseOnHover={true}
+          newestOnTop
+          theme={'dark'}
+        />
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="*" element={<h2>Not found</h2>} />

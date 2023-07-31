@@ -110,7 +110,7 @@
   fill: #4742fd;
 }
 .button__secondary:focus {
-  color: #302aff;
+  color: #5a57ee;
   border-color: #302aff;
 }
 .button__secondary:focus svg {

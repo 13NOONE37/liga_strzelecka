@@ -1,16 +1,13 @@
-import React, { useRef, useState } from 'react';
-import cx from 'classnames';
+import React, { useEffect, useRef } from 'react';
 import styles from './NewModal.module.css';
 import FocusTrap from 'focus-trap-react';
-import DefaultButton, {
-  IconButton,
-} from '../../../../components/button/Button';
+import { IconButton } from '../../../../components/button/Button';
 import { ReactComponent as CloseIcon } from '../../../../assets/icons/close.svg';
 import { useDetectOutsideClick } from '../../../../hooks/useDetectOutsideClick';
-import Input from '../../../../components/input/Input';
 
 export default function NewModal({
   setShowModal,
+  preShowModal,
   setPreShowModal,
   headline,
   width,
@@ -23,12 +20,18 @@ export default function NewModal({
 
   const handleClose = () => {
     setPreShowModal(false);
-    containerRef.current.classList.add(styles['hide']);
-    modalRef.current.classList.add(styles['newModal__hide']);
-    setTimeout(() => {
-      setShowModal(false);
-    }, inTimeMs);
   };
+
+  useEffect(() => {
+    if (preShowModal === false) {
+      containerRef.current.classList.add(styles['hide']);
+      modalRef.current.classList.add(styles['newModal__hide']);
+      setTimeout(() => {
+        setShowModal(false);
+        console.log('in timeout');
+      }, outTimeMs);
+    }
+  }, [preShowModal]);
 
   useDetectOutsideClick(modalRef, handleClose);
 
