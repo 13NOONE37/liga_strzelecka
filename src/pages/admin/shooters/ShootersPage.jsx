@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
 import cx from 'classnames';
 import { Formik } from 'formik';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,220 +10,175 @@ import styles from './ShootersPage.module.css';
 import NewModal from '../../../components/modal/RTUComponents/newModal/NewModal';
 import Input from '../../../components/input/Input';
 import AnimatedPage from '../../../components/animatedPage/AnimatedPage';
-import Select from '../../../components/select/Select';
+import DataContext from '../../../store/DataContext';
+import fetchData from '../../../utils/fetchData';
 import SelectWithHeading from '../../../components/select/SelectWithHeading';
+import Select from '../../../components/select/Select';
 
 export default function ShootersPage() {
-  const [shootersState, setShootersState] = useReducer(
+  const { schools, shooters, setShooters } = useContext(DataContext);
+  const [shooterState, setShooterState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
-      isLoading: true,
       showModal: false,
       preShowModal: false,
-      shooters: [],
       editId: undefined,
-      currentSchool: undefined, //get grom url if exist
+      isFocused: false,
+      currentSchool: { value: null, label: 'Wszystkie' },
+      currentGender: { value: null, label: 'Obie' }, //1-man, 0-woman,null both
     },
   );
-
-  const getGender = (name) => {
-    const isMan = { value: 1, label: 'Mężczyzna' };
-    const isWoman = { value: 0, label: 'Kobieta' };
-
-    const phrase = name.replace(/\//g, '\\/');
-    const regex = new RegExp(phrase, 'i');
-    if (regex.test('kuba')) {
-      return isMan;
-    }
-    console.log(name.charAt(name.length - 1) === 'a' ? isWoman : isMan);
-    // Check if the last character of the name is 'a'
-    return name.charAt(name.length - 1) === 'a' ? isWoman : isMan;
-  };
-  const getSchool = (id) => {
-    return { value: id, label: 'Maricn' }; //todo We need to get it from context
-  };
-  const currentShooter =
-    shootersState.editId &&
-    shootersState.shooters.find((i) => i.id === shootersState.editId);
+  const currentShooter = shooters.find(
+    (shooter) => shooter.shooter_id === shooterState.editId,
+  );
 
   const formInitialValues = {
     firstName: currentShooter ? currentShooter.firstName : '',
     secondName: currentShooter ? currentShooter.secondName : '',
-    gender: currentShooter && getGender(currentShooter.firstName),
-    schoolId: currentShooter
-      ? getSchool(currentShooter.schoolId)
-      : shootersState.currentSchool,
+    isMan: currentShooter
+      ? {
+          value: currentShooter.isMan,
+          label: currentShooter.isMan ? 'Mężczyzna' : 'Kobieta',
+        }
+      : typeof shooterState.currentGender.value === 'number'
+      ? shooterState.currentGender
+      : null,
+    school: currentShooter
+      ? {
+          value: currentShooter.school_id,
+          label: schools.find(
+            (school) => school.school_id === currentShooter.school_id,
+          ).name,
+        }
+      : shooterState.currentSchool.value
+      ? shooterState.currentSchool
+      : null,
   };
+
   const handleValidate = (values) => {
     const errors = {};
-    if (!values.firstName) {
+    if (!shooterState.isFocused) return errors;
+
+    if (!values.firstName.trim()) {
       errors.firstName = {
         status: 'warning',
-        message: 'Imię jest wymagane',
-      };
-    } else if (values.firstName.trim().length === 0) {
-      errors.firstName = {
-        status: 'warning',
-        message: 'Imię nie może być puste',
+        message: 'Imie jest wymagane',
       };
     }
-
-    if (!values.secondName) {
+    if (!values.secondName.trim()) {
       errors.secondName = {
         status: 'warning',
         message: 'Nazwisko jest wymagane',
       };
-    } else if (values.secondName.trim().length === 0) {
-      errors.secondName = {
+    }
+    if (!values.school?.value) {
+      errors.school = {
         status: 'warning',
-        message: 'Nazwisko nie może być puste',
+        message: 'Szkoła jest wymagana',
       };
     }
 
-    if (!values.gender) {
-      errors.gender = {
+    if (values.isMan?.value === null) {
+      errors.isMan = {
         status: 'warning',
-        message: 'Wybierz płeć',
-      };
-    }
-
-    if (!values.schoolId) {
-      errors.schoolId = {
-        status: 'warning',
-        message: 'Wybierz szkołę',
+        message: 'Płeć jest wymagana',
       };
     }
     return errors;
   };
   const handleSubmitAdd = async (values, { setSubmitting }) => {
-    const newShooters = [...shootersState.shooters];
-    const id = uuidv4();
-    newShooters.push({
-      id: id,
-      firstName: values.firstName,
-      secondName: values.secondName,
-      isMan: values.gender.value,
-      schoolId: values.schoolId.value,
-      index: newShooters.length + 1,
-    });
+    try {
+      const newShooters = [...shooters];
+      const id = uuidv4();
+      newShooters.push({
+        shooter_id: id,
+        school_id: values.school.value,
+        firstName: values.firstName,
+        secondName: values.secondName,
+        isMan: values.isMan.value,
+        index: newShooters.length + 1,
+        visible: true,
+        checked: false,
+      });
 
-    await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log('backend...💭💭💭');
-        resolve();
-      }, 1500);
-    });
-    //!we need to make api callback and put school database
-    //! if it returns some error we stop executing code here
-    //!and error is displayed in notification
+      const { status } = await fetchData({
+        action: 'createShooter',
+        shooter_id: id,
+        school_id: values.school.value,
+        firstName: values.firstName,
+        secondName: values.secondName,
+        isMan: values.isMan.value,
+      });
 
-    setShootersState({
-      shooters: newShooters,
-      showModal: false,
-      preShowModal: false,
-    });
+      //Only if fetch is success✅
+      if (status === 200) {
+        setShooterState({
+          preShowModal: false,
+        });
+        setShooters(newShooters);
+      }
+    } catch (error) {
+      toast.error('Coś poszło nie tak. Spróbuj ponownie.', {
+        autoClose: 4000,
+        closeButton: false,
+        pauseOnHover: false,
+      });
+    }
+
     setSubmitting(false);
   };
-  const handleSubmitUpdate = async (values, { setSubmitting }) => {
-    const newShooters = [...shootersState.shooters].map((i) => {
-      if (i.id === shootersState.editId) {
-        i.firstName = values.firstName;
-        i.secondtName = values.secondName;
-        i.isMan = values.gender.value;
-        i.schoolId = values.schoolId.value;
+  const handleSubmitUpdate = async (values, { setSubmitting, setErrors }) => {
+    try {
+      const { status } = await fetchData({
+        action: 'updateShooter',
+        shooter_id: shooterState.editId,
+        school_id: values.school.value,
+        firstName: values.firstName,
+        secondName: values.secondName,
+        isMan: values.isMan.value,
+      });
+
+      //Only if fetch is success✅
+      if (status === 200) {
+        setShooterState({
+          preShowModal: false,
+        });
+        setShooters((prev) =>
+          prev.map((item) => {
+            if (item.shooter_id === shooterState.editId) {
+              return {
+                ...item,
+                school_id: values.school.value,
+                firstName: values.firstName,
+                secondName: values.secondName,
+                isMan: values.isMan.value,
+              };
+            }
+            return item;
+          }),
+        );
       }
+    } catch (error) {
+      toast.error('Coś poszło nie tak. Spróbuj ponownie.', {
+        autoClose: 4000,
+        closeButton: false,
+        pauseOnHover: false,
+      });
+    }
 
-      return i;
-    });
-
-    await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log('backend...💭💭💭');
-        resolve();
-      }, 1500);
-    });
-    // //!we need to make api callback and put school database
-    // //! if it returns some error we stop executing code here
-    // //!and error is displayed in notification
-
-    setShootersState({
-      shooters: newShooters,
-      showModal: false,
-      preShowModal: false,
-      editId: undefined,
-    });
     setSubmitting(false);
   };
 
   useEffect(() => {
-    const fetchSchools = async () => {
-      await new Promise((res, req) => setTimeout(() => res(), 2000));
-
-      let fetchedData = [
-        {
-          id: 1,
-          firstName: 'Emilia',
-          secondName: 'Nowak',
-          schoolId: 1,
-          isMan: false,
-        },
-        {
-          id: 2,
-          firstName: 'Marcin',
-          secondName: 'Najman',
-          schoolId: 2,
-          isMan: true,
-        },
-        {
-          id: 3,
-          firstName: 'Olivia',
-          secondName: 'Wiśniewska',
-          schoolId: 1,
-          isMan: false,
-        },
-        {
-          id: 4,
-          firstName: 'Marcin',
-          secondName: 'Wrzosek',
-          schoolId: 3,
-          isMan: true,
-        },
-        {
-          id: 5,
-          firstName: 'Zuzanna',
-          secondName: 'Jankowska',
-          schoolId: 4,
-          isMan: false,
-        },
-        {
-          id: 6,
-          firstName: 'Filip',
-          secondName: 'Dąbrowski',
-          schoolId: 5,
-          isMan: true,
-        },
-        {
-          id: 7,
-          firstName: 'Natalia',
-          secondName: 'Woźniak',
-          schoolId: 345,
-          isMan: 3,
-        },
-      ];
-
-      //Below the ordinal number is applied
-      fetchedData = fetchedData.map((item, index) => {
-        item.index = index + 1;
-        return item;
-      });
-
-      setShootersState({
-        isLoading: false,
-        shooters: fetchedData,
-      });
-    };
-
-    fetchSchools();
+    //Reset visibility and checkmark to default
+    return () =>
+      setShooters((prev) =>
+        prev.map((item) => ({
+          ...item,
+          visible: true,
+          checked: false,
+        })),
+      );
   }, []);
 
   return (
@@ -237,68 +192,75 @@ export default function ShootersPage() {
             size={'medium'}
             iconPosition={'right'}
             action={() =>
-              setShootersState({ showModal: true, preShowModal: true })
+              setShooterState({ showModal: true, preShowModal: true })
             }
           />
         </header>
         <section
           className={cx(styles.section, {
-            [styles['section__active']]: shootersState.preShowModal,
+            [styles['section__active']]: shooterState.preShowModal,
           })}
         >
           <ElementsList
-            isLoading={shootersState.isLoading}
-            data={shootersState.shooters}
-            setData={(data) => setShootersState({ schooters: data })}
             setIsEditing={(value) =>
-              setShootersState({
+              setShooterState({
                 editId: value,
                 showModal: true,
                 preShowModal: true,
               })
             }
-            currentSchool={shootersState.currentSchool}
-            setCurrentSchool={(value) => {
-              setShootersState({ currentSchool: value });
-            }}
+            currentSchool={shooterState.currentSchool}
+            setCurrentSchool={(value) =>
+              setShooterState({ currentSchool: value })
+            }
+            currentGender={shooterState.currentGender}
+            setCurrentGender={(value) =>
+              setShooterState({ currentGender: value })
+            }
           />
 
-          {shootersState.showModal && (
+          {shooterState.showModal && (
             <NewModal
               setShowModal={(value) =>
-                setShootersState({ showModal: value, editId: undefined })
+                setShooterState({
+                  showModal: value,
+                  editId: undefined,
+                })
               }
+              preShowModal={shooterState.preShowModal}
               setPreShowModal={(value) =>
-                setShootersState({ preShowModal: value })
+                setShooterState({ preShowModal: value, isFocused: false })
               }
               headline={
-                shootersState.editId === undefined
+                shooterState.editId === undefined
                   ? 'Dodaj strzelca'
                   : 'Zmień dane'
               }
               inTimeMs={250}
               outTimeMs={150}
-              width={500}
+              width={480}
             >
               <Formik
                 initialValues={formInitialValues}
                 validate={handleValidate}
+                validateOnBlur={true}
                 onSubmit={
-                  shootersState.editId === undefined
+                  shooterState.editId === undefined
                     ? handleSubmitAdd
                     : handleSubmitUpdate
                 }
-                validateOnMount={shootersState.editId != undefined}
               >
                 {({
                   values,
                   errors,
                   touched,
+
                   handleChange,
-                  setFieldValue,
                   handleBlur,
                   handleSubmit,
                   isSubmitting,
+                  setFieldValue,
+                  setFieldTouched,
                 }) => (
                   <form onSubmit={handleSubmit} className={styles.modalContent}>
                     <div
@@ -317,6 +279,10 @@ export default function ShootersPage() {
                         status={touched.firstName && errors.firstName?.status}
                         statusMessage={errors.firstName?.message}
                         autoComplete={'off'}
+                        focusOnMount
+                        setIsFocused={() =>
+                          setShooterState({ isFocused: true })
+                        }
                       />
                     </div>
                     <div
@@ -335,6 +301,9 @@ export default function ShootersPage() {
                         status={touched.secondName && errors.secondName?.status}
                         statusMessage={errors.secondName?.message}
                         autoComplete={'off'}
+                        setIsFocused={() =>
+                          setShooterState({ isFocused: true })
+                        }
                       />
                     </div>
 
@@ -346,8 +315,8 @@ export default function ShootersPage() {
                     >
                       <SelectWithHeading
                         heading={'Wybierz płeć'}
-                        status={touched.gender && errors.gender?.status}
-                        statusMessage={errors.gender?.message}
+                        status={touched.isMan && errors.isMan?.status}
+                        statusMessage={errors.isMan?.message}
                       >
                         <Select
                           options={[
@@ -358,8 +327,12 @@ export default function ShootersPage() {
                           isSearchable={false}
                           height={50}
                           backgroundColor={'#222131'}
-                          value={values.gender}
-                          onChange={(value) => setFieldValue('gender', value)}
+                          value={values.isMan}
+                          onChange={(value) => setFieldValue('isMan', value)}
+                          setIsFocused={() =>
+                            setShooterState({ isFocused: true })
+                          }
+                          setTouched={() => setFieldTouched('isMan', true)}
                         />
                       </SelectWithHeading>
                     </div>
@@ -371,45 +344,39 @@ export default function ShootersPage() {
                     >
                       <SelectWithHeading
                         heading={'Wybierz szkołę'}
-                        status={touched.schoolId && errors.schoolId?.status}
-                        statusMessage={errors.schoolId?.message}
+                        status={touched.school && errors.school?.status}
+                        statusMessage={errors.school?.message}
                       >
                         <Select
                           placeholder={'Szkoła'}
                           height={50}
-                          options={[
-                            { value: 1, label: 'Szkoła Podstawowa nr 1' }, //value is of course id of school
-                            {
-                              value: 2,
-                              label: 'Gimnazjum im. Jana Kowalskiego',
-                            },
-                            { value: 3, label: 'Liceum Ogólnokształcące nr 5' },
-                            {
-                              value: 4,
-                              label: 'Szkoła Artystyczna dla Młodych Talentów',
-                            },
-                            {
-                              value: 5,
-                              label:
-                                'Technikum Elektryczne im. Marii Skłodowskiej-Curie',
-                            },
-                            { value: 6, label: 'Szkoła Podstawowa nr 3' },
-                          ]}
+                          options={schools.map(({ school_id, name }) => ({
+                            value: school_id,
+                            label: name,
+                          }))}
                           isSearchable={true}
                           backgroundColor={'#222131'}
-                          value={values.schoolId}
-                          onChange={(value) => setFieldValue('schoolId', value)}
+                          value={values.school}
+                          onChange={(value) => setFieldValue('school', value)}
+                          setIsFocused={() =>
+                            setShooterState({ isFocused: true })
+                          }
+                          setTouched={() => setFieldTouched('school', true)}
                         />
                       </SelectWithHeading>
                     </div>
                     <DefaultButton
                       text={
-                        shootersState.editId === undefined
+                        shooterState.editId === undefined
                           ? 'Dodaj strzelca'
                           : 'Akualizuj dane'
                       }
                       type={'submit'}
                       isLoading={isSubmitting}
+                      disabled={
+                        Object.values(errors).length > 0 ||
+                        Object.values(touched).length === 0
+                      }
                     />
                   </form>
                 )}

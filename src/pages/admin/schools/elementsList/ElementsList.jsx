@@ -1,4 +1,10 @@
-import React, { forwardRef, useReducer, useRef } from 'react';
+import React, {
+  forwardRef,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+} from 'react';
 import FlipMove from 'react-flip-move';
 import cx from 'classnames';
 
@@ -18,43 +24,47 @@ import ConfirmModal from '../../../../components/modal/RTUComponents/ConfirmModa
 import ContextMenu from '../../../../components/contextMenu/ContextMenu';
 import fetchData from '../../../../utils/fetchData';
 import { toast } from 'react-toastify';
+import SearchInput from '../../../../components/input/RTUComponents/SearchInput';
+import DataContext from '../../../../store/DataContext';
+import getVisiblityInfo from '../../../../utils/getVisiblityInfo';
 
-export default function ElementsList({ data, setData, setIsEditing }) {
+export default function ElementsList({ setIsEditing }) {
+  const { schools, setSchools } = useContext(DataContext);
   const [elementsState, setElementsState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
       showDeleteModal: false,
       filters: {
-        index: null, //true=asc, false=desc, null=inactive
-        name: null,
+        name: false, //true=asc, false=desc, null=inactive
       },
       toDeleteId: undefined,
+      tempSearchPhrase: '',
+      searchPhrase: '',
     },
   );
-  const setFiltering = (indexState, nameState) => {
+  const setFiltering = (nameState) => {
     setElementsState({
       filters: {
-        index: indexState,
         name: nameState,
       },
     });
   };
   const handleCheckAll = () => {
-    setData((prev) =>
+    setSchools((prev) =>
       prev.map((item) => {
         return {
           ...item,
-          checked: !prev.every(({ checked }) => checked),
+          checked: item.visible ? !prev.every(({ checked }) => checked) : false,
         };
       }),
     );
   };
-  const handleSort = (data) => {
-    filterArrayOfObjects(data, 'index', 'asc');
+  const handleSort = (schools) => {
+    // filterArrayOfObjects(schools, 'index', 'asc');
 
     let currentFilter;
     for (const filter of Object.entries(elementsState.filters)) {
-      if (filter[1]) {
+      if (filter[1] !== null) {
         currentFilter = filter;
         break;
       }
@@ -62,13 +72,13 @@ export default function ElementsList({ data, setData, setIsEditing }) {
 
     if (currentFilter) {
       return filterArrayOfObjects(
-        data,
+        schools,
         currentFilter[0],
         currentFilter[1] ? 'desc' : 'asc',
       );
     }
 
-    return data;
+    return schools;
   };
   const handleDelete = (id) => {
     const idsToDeleteList = [];
@@ -80,7 +90,7 @@ export default function ElementsList({ data, setData, setIsEditing }) {
       );
       idsToFilterList.push(id);
     } else {
-      data.forEach((item) => {
+      schools.forEach((item) => {
         if (item.checked && item.visible) {
           idsToDeleteList.push(
             fetchData({ action: 'deleteSchool', school_id: item.school_id }),
@@ -97,7 +107,8 @@ export default function ElementsList({ data, setData, setIsEditing }) {
             if (result.reason.response.status === 409) {
               toast.error(
                 `Nie można usunąć szkoły "${
-                  data.find((v) => v.school_id === idsToFilterList[index]).name
+                  schools.find((v) => v.school_id === idsToFilterList[index])
+                    .name
                 }" ponieważ wciąż są do niej przypisani strzelcy.`,
                 {
                   autoClose: 5000,
@@ -114,7 +125,7 @@ export default function ElementsList({ data, setData, setIsEditing }) {
           }
         });
 
-        setData((prev) =>
+        setSchools((prev) =>
           prev
             .filter((item) => !idsToFilterList.includes(item.school_id))
             .map((item) => {
@@ -134,8 +145,20 @@ export default function ElementsList({ data, setData, setIsEditing }) {
       );
   };
 
+  useEffect(() => {
+    const phrase = elementsState.searchPhrase.trim().replace(/\//g, '\\/');
+    const regex = new RegExp(phrase, 'i');
+
+    setSchools((prev) =>
+      prev.map((item) => ({
+        ...item,
+        visible: regex.test(item.name),
+      })),
+    );
+  }, [elementsState.searchPhrase]);
+
   const handleCheckboxChange = (school_id) => {
-    setData((prev) => {
+    setSchools((prev) => {
       return prev.map((item) => {
         if (item.school_id === school_id) {
           return {
@@ -148,35 +171,29 @@ export default function ElementsList({ data, setData, setIsEditing }) {
     });
   };
 
-  const isEmpty = data?.length == 0;
-  const isEveryChecked = data.every(({ checked }) => checked);
-  const isAnyChecked = data.some(({ checked }) => checked);
+  const { isEveryHidden, isEmpty, isEveryChecked, isAnyChecked } =
+    getVisiblityInfo(schools);
+
   return (
     <div className={styles.container}>
+      <div className={styles.searchNav}>
+        <div className={styles['searchNav--search']}>
+          <SearchInput
+            tempValue={elementsState.tempSearchPhrase}
+            onChange={(e) => {
+              setElementsState({ tempSearchPhrase: e.target.value });
+            }}
+            setValue={(value) => setElementsState({ searchPhrase: value })}
+          />
+        </div>
+      </div>
+
       <ul className={styles.nav}>
         <li className={styles['nav--element']}>
           <Checkbox
             checked={!isEmpty && isEveryChecked}
             onChange={handleCheckAll}
-            disabled={isEmpty}
-          />
-        </li>
-        <li
-          className={cx(styles['nav--element'], {
-            [styles['desc-dropdown']]: !elementsState.filters.index,
-            [styles['asc-dropdown']]: elementsState.filters.index,
-          })}
-        >
-          <DefaultButton
-            style={'text'}
-            size={'small'}
-            icon={<DropDownIcon />}
-            iconPosition={'right'}
-            text={'Lp.'}
-            action={() => {
-              setFiltering(!elementsState.filters.index, null);
-            }}
-            disabled={isEmpty}
+            disabled={isEmpty || isEveryHidden}
           />
         </li>
         <li
@@ -192,9 +209,9 @@ export default function ElementsList({ data, setData, setIsEditing }) {
             iconPosition={'right'}
             text={'Nazwa'}
             action={() => {
-              setFiltering(null, !elementsState.filters.name);
+              setFiltering(!elementsState.filters.name);
             }}
-            disabled={isEmpty}
+            disabled={isEmpty || isEveryHidden}
           />
         </li>
         <li className={styles['nav--element']}>
@@ -211,7 +228,7 @@ export default function ElementsList({ data, setData, setIsEditing }) {
       </ul>
 
       <FlipMove className={styles.elements} duration={300} delay={50}>
-        {handleSort(data).map((props) => {
+        {handleSort(schools).map((props) => {
           return (
             props.visible && (
               <div className={styles.element} key={props.school_id}>
@@ -229,7 +246,7 @@ export default function ElementsList({ data, setData, setIsEditing }) {
 
       {elementsState.showDeleteModal && (
         <ConfirmDelete
-          data={data}
+          schools={schools}
           elementsState={elementsState}
           setElementsState={setElementsState}
           handleDelete={handleDelete}
@@ -243,7 +260,6 @@ const SchoolComponent = ({
   school_id,
   checked,
   handleCheckboxChange,
-  index,
   name,
   setIsEditing,
   setElementsState,
@@ -255,7 +271,6 @@ const SchoolComponent = ({
         checked={checked}
         onChange={() => handleCheckboxChange(school_id)}
       />
-      <span>{index}</span>
       <span>{name}</span>
       <ContextMenu
         options={[
@@ -294,7 +309,7 @@ const SchoolComponent = ({
 };
 
 function ConfirmDelete({
-  data,
+  schools,
   elementsState,
   setElementsState,
   handleDelete,
@@ -305,12 +320,15 @@ function ConfirmDelete({
         <ul className={styles.confirmList}>
           {elementsState.toDeleteId !== undefined ? (
             <li>
-              {data.find((i) => i.school_id === elementsState.toDeleteId).name}
+              {
+                schools.find((i) => i.school_id === elementsState.toDeleteId)
+                  .name
+              }
             </li>
           ) : (
-            data.map(
-              ({ school_id, checked, name }) =>
-                checked && <li key={school_id}>{name}</li>,
+            schools.map(
+              ({ school_id, checked, visible, name }) =>
+                checked && visible && <li key={school_id}>{name}</li>,
             )
           )}
         </ul>

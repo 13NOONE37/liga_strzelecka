@@ -1,4 +1,4 @@
-import React, { useId, useReducer } from 'react';
+import React, { useEffect, useId, useReducer, useRef } from 'react';
 import cx from 'classnames';
 
 import styles from './Input.module.css';
@@ -19,6 +19,8 @@ export default function Input({
   status, // success, warning or error
   statusMessage,
   disabled,
+  focusOnMount,
+  setIsFocused,
   ...params
 }) {
   const [inputState, setInputState] = useReducer(
@@ -28,6 +30,7 @@ export default function Input({
       isActive: false,
     },
   );
+  const inputRef = useRef(null);
 
   const inputBox = cx(styles['input--box'], {
     [styles['input--box__active']]: value.length > 0 || inputState.isActive,
@@ -35,6 +38,16 @@ export default function Input({
     [styles[`input--box__${status}`]]: status,
     [styles['input--box__disabled']]: disabled,
   });
+
+  useEffect(() => {
+    if (setIsFocused && focusOnMount && inputRef.current) {
+      inputRef.current.focus();
+      setTimeout(() => {
+        //We are setting this state to prevent validating on initial focus
+        setIsFocused(true);
+      }, 0);
+    }
+  }, []);
 
   return (
     <div className={styles['box']}>
@@ -49,6 +62,7 @@ export default function Input({
         )}
 
         <input
+          ref={inputRef}
           className={styles['input']}
           id={inputState.id}
           type={type}

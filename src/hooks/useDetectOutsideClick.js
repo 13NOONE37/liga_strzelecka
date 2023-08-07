@@ -5,6 +5,9 @@ export const useDetectOutsideClick = (ref, handler) => {
     if (!ref.current || ref.current.contains(e.target)) {
       return;
     }
+    if (document.querySelector('.Toastify').contains(e.target)) {
+      return;
+    }
     handler();
   };
 

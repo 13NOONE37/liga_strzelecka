@@ -35,5 +35,38 @@
 }
 body {
   font-family: 'DM Sans', sans-serif;
-  overflow: hidden auto;
+  /* overflow: hidden auto; */
+}
+
+input,
+textarea,
+button,
+select,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+/* Customize scrollbar track */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background-color: #39394b;
+}
+
+/* Customize scrollbar thumb */
+::-webkit-scrollbar-thumb {
+  background-color: hsl(241, 25%, 35%);
+  transition: background-color 0.2s linear;
+}
+
+/* Customize scrollbar track on hover */
+::-webkit-scrollbar:hover {
+  width: 15px;
+  height: 15px;
+}
+
+/* Customize scrollbar thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+  transition: background-color 0.2s linear;
+
+  background-color: hsl(241, 25%, 40%);
 }

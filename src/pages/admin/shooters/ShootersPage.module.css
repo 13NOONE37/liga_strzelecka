@@ -4,8 +4,8 @@
   flex-direction: column;
   gap: 40px;
   padding: 30px;
+  background-color: #222131;
   height: 100%;
-  overflow: hidden auto;
 }
 .header {
   display: flex;
@@ -23,9 +23,10 @@
   transition: width 0.25s ease-in-out;
   will-change: width;
 }
+
 @media (min-width: 1480px) {
   .section__active {
-    width: calc(100% - 500px);
+    width: calc(100% - 480px);
   }
 }
 .modalContent {

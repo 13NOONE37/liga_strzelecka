@@ -1,14 +1,12 @@
 .container {
-  background-color: #222131;
-  width: 100%;
-  height: 100vh;
   display: grid;
-  grid-template-columns: auto 1fr;
-  /* overflow: auto auto; */
+  grid-template-columns: 220px 1fr;
+  height: 100vh;
+
+  background-color: #222131;
+  overflow: auto;
 }
 .main {
-  height: 100%;
-  /* padding: 30px; */
 }
 
 .loadingContainer {

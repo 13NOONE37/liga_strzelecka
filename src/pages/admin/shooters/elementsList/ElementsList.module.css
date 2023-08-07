@@ -1,22 +1,37 @@
 .container {
 }
 .nav {
-  grid-template-columns: 75px 100px 100px 150px 1fr auto;
+  grid-template-columns: 75px 130px 180px 1fr auto;
+}
+.elements {
+  height: calc(100vh - 485px);
 }
 .element {
-  grid-template-columns: 75px 100px 100px 150px 1fr auto;
+  grid-template-columns: 75px 130px 180px 1fr auto;
 }
 
 .searchNav {
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
+  display: grid;
+  grid-template-columns: 300px auto 300px;
+  grid-template-rows: 110px 100px;
+  grid-column-gap: 1em;
+  grid-template-areas: 'school _ search' 'gender __ ___';
+  place-items: center start;
 }
-.searchNav--select {
+.searchNav--select__school {
+  grid-area: school;
+}
+.searchNav--select__gender {
+  grid-area: gender;
 }
 .searchNav--search {
+  grid-area: search;
   width: 300px;
 }
-.searchNav--search > div > div {
+.searchNav--search > div {
+  user-select: none;
+  grid-template-rows: unset;
+}
+.searchNav--search > div > div > div > div {
   background-color: #39394b;
 }

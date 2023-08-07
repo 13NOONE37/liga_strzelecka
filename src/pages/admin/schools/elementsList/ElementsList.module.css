@@ -1,8 +1,20 @@
 .container {
 }
+.searchNav {
+  display: flex;
+  align-items: center;
+}
+.searchNav--search {
+  width: 300px;
+  max-width: 100%;
+}
+.searchNav--search > div > div {
+  background-color: #39394b;
+}
+
 .nav {
   display: grid;
-  grid-template-columns: 75px 100px 6fr auto;
+  grid-template-columns: 75px 6fr auto;
   place-items: center start;
   list-style: none;
   padding: 14px 28px;
@@ -17,12 +29,13 @@
   font-size: 16px;
   font-weight: 400;
   color: #ffffff;
+  transition: unset;
 }
 .nav--element button svg {
   fill: white;
   height: 24px;
   width: 24px;
-  transition: transform 0.3s ease-in, fill 0.1s ease-in;
+  transition: transform 0.3s ease-in;
 }
 .asc-dropdown svg {
   transform: rotate(0deg);
@@ -36,10 +49,17 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  min-height: 310px;
+  min-width: 600px;
+  height: calc(100vh - 355px);
+  overflow: hidden auto;
+  padding-right: 30px;
+  /* scroll-snap-type: y mandatory; */
 }
 .element {
   display: grid;
-  grid-template-columns: 75px 100px 6fr auto;
+  grid-template-columns: 75px 6fr auto;
   place-items: center start;
 
   width: 100%;
@@ -51,6 +71,7 @@
   font-weight: 400;
   font-size: 14px;
   color: #ffffff;
+  /* scroll-snap-align: start; */
 }
 .element span {
   width: 100%;
@@ -67,6 +88,14 @@
   width: 26px;
   height: 26px;
 }
+.element--more:hover svg,
+.element--more:focus svg {
+  fill: #605cff;
+}
+.element--more:active svg {
+  fill: #4742fd;
+}
+
 .element--more svg {
   width: 100%;
   height: 100%;

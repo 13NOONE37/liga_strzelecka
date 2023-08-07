@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
 import cx from 'classnames';
 import { Formik } from 'formik';
 import { v4 as uuidv4 } from 'uuid';
@@ -12,6 +12,7 @@ import Input from '../../../components/input/Input';
 import AnimatedPage from '../../../components/animatedPage/AnimatedPage';
 import DataContext from '../../../store/DataContext';
 import fetchData from '../../../utils/fetchData';
+import { toast } from 'react-toastify';
 
 export default function SchoolsPage() {
   const { schools, setSchools } = useContext(DataContext);
@@ -21,6 +22,7 @@ export default function SchoolsPage() {
       showModal: false,
       preShowModal: false,
       editId: undefined,
+      isFocused: false,
     },
   );
   const formInitialValues = {
@@ -32,6 +34,7 @@ export default function SchoolsPage() {
 
   const handleValidate = (values) => {
     const errors = {};
+    if (!schoolState.isFocused) return errors;
     if (!values.name) {
       errors.name = {
         status: 'warning',
@@ -76,20 +79,25 @@ export default function SchoolsPage() {
         setSchools(newSchools);
       }
     } catch (error) {
-      setErrors({
-        name: {
-          status: 'error',
-          message:
-            error.response.status === 409
-              ? 'Taka szkoła już istnieje'
-              : 'Coś poszło nie tak. Spróbuj ponownie.',
-        },
-      });
+      if (error.response.status === 409) {
+        setErrors({
+          name: {
+            status: 'error',
+            message: 'Taka szkoła już istnieje',
+          },
+        });
+      } else {
+        toast.error('Coś poszło nie tak. Spróbuj ponownie.', {
+          autoClose: 4000,
+          closeButton: false,
+          pauseOnHover: false,
+        });
+      }
     }
 
     setSubmitting(false);
   };
-  const handleSubmitUpdate = async (values, { setSubmitting }) => {
+  const handleSubmitUpdate = async (values, { setSubmitting, setErrors }) => {
     try {
       const { status } = await fetchData({
         action: 'updateSchool',
@@ -115,12 +123,7 @@ export default function SchoolsPage() {
         );
       }
     } catch (error) {
-      setErrors({
-        name: {
-          status: 'error',
-          message: 'Coś poszło nie tak. Spróbuj ponownie.',
-        },
-      });
+      toast.error('Coś poszło nie tak. Spróbuj ponownie.', { autoClose: 5000 });
     }
 
     setSubmitting(false);
@@ -159,8 +162,6 @@ export default function SchoolsPage() {
           })}
         >
           <ElementsList
-            data={schools}
-            setData={setSchools}
             setIsEditing={(value) =>
               setSchoolState({
                 editId: value,
@@ -177,7 +178,7 @@ export default function SchoolsPage() {
               }
               preShowModal={schoolState.preShowModal}
               setPreShowModal={(value) =>
-                setSchoolState({ preShowModal: value })
+                setSchoolState({ preShowModal: value, isFocused: false })
               }
               headline={
                 schoolState.editId === undefined ? 'Dodaj szkołę' : 'Zmień dane'
@@ -194,7 +195,7 @@ export default function SchoolsPage() {
                     ? handleSubmitAdd
                     : handleSubmitUpdate
                 }
-                validateOnMount={schoolState.editId != undefined}
+                validateOnMount={schoolState.editId}
               >
                 {({
                   values,
@@ -216,6 +217,8 @@ export default function SchoolsPage() {
                         onBlur={handleBlur}
                         status={errors.name?.status}
                         statusMessage={errors.name?.message}
+                        focusOnMount
+                        setIsFocused={() => setSchoolState({ isFocused: true })}
                       />
                     </div>
                     <DefaultButton

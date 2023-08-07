@@ -8,6 +8,7 @@ import React, {
 import cx from 'classnames';
 import styles from './ContextMenu.module.css';
 import { useDetectOutsideClick } from '../../hooks/useDetectOutsideClick';
+import FocusTrap from 'focus-trap-react';
 const ContextMenu = forwardRef(({ options, children }, ref) => {
   const [active, setActive] = useState(false);
   const [position, setPosition] = useState('bottom');
@@ -26,7 +27,7 @@ const ContextMenu = forwardRef(({ options, children }, ref) => {
     const contextRect = contextRef.current.getBoundingClientRect();
     let { width, height } = contextRect;
 
-    const EDGE_OFFSET = 8;
+    const EDGE_OFFSET = 12;
     const TRIANGLE_SIZE = 20;
 
     const OFFSET_LEFT = buttonRect.left;
@@ -86,31 +87,37 @@ const ContextMenu = forwardRef(({ options, children }, ref) => {
   }, [active]);
 
   return (
-    <div className={styles.container} ref={containerRef}>
-      {children(() => setActive(!active))}
-      <ul
-        className={cx(styles.contextMenu, styles[`contextMenu__${position}`], {
-          [styles['contextMenu__active']]: active,
-        })}
-        ref={contextRef}
-      >
-        {options.map(({ icon, text, action, disabled }, index) => (
-          <li className={styles['contextMenu--element']} key={index}>
-            <button
-              onClick={() => {
-                action();
-                setActive(false);
-              }}
-              type="button"
-              disabled={disabled}
-            >
-              {icon}
-              {text}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <FocusTrap active={active}>
+      <div className={styles.container} ref={containerRef}>
+        {children(() => setActive(!active))}
+        <ul
+          className={cx(
+            styles.contextMenu,
+            styles[`contextMenu__${position}`],
+            {
+              [styles['contextMenu__active']]: active,
+            },
+          )}
+          ref={contextRef}
+        >
+          {options.map(({ icon, text, action, disabled }, index) => (
+            <li className={styles['contextMenu--element']} key={index}>
+              <button
+                onClick={() => {
+                  action();
+                  setActive(false);
+                }}
+                type="button"
+                disabled={disabled}
+              >
+                {icon}
+                {text}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </FocusTrap>
   );
 });
 export default ContextMenu;
