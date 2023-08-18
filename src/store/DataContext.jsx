@@ -5,5 +5,7 @@ const DataContext = createContext({
   setSchools: () => {},
   shooters: null,
   setShooters: () => {},
+  contests: null,
+  setContests: () => {},
 });
 export default DataContext;

@@ -1,0 +1,34 @@
+.container {
+  position: relative;
+  /* display: flex;
+  flex-direction: column;
+  gap: 40px; */
+  padding: 26px;
+  background-color: #222131;
+  height: 100%;
+}
+@media (min-width: 1480px) {
+  .section__active {
+    width: calc(100% - 420px);
+  }
+}
+
+.header {
+}
+.section {
+}
+
+.modalContent {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  place-items: start center;
+}
+.modalContent > button {
+  width: 100%;
+}
+
+.modalContent--field__date,
+.modalContent--field__school {
+  width: 320px;
+}

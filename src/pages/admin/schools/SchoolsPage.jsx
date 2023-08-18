@@ -53,7 +53,10 @@ export default function SchoolsPage() {
     }
     return errors;
   };
-  const handleSubmitAdd = async (values, { setSubmitting, setErrors }) => {
+  const handleSubmitAdd = async (
+    values,
+    { setSubmitting, setErrors, resetForm },
+  ) => {
     try {
       const newSchools = [...schools];
       const id = uuidv4();
@@ -77,6 +80,7 @@ export default function SchoolsPage() {
           preShowModal: false,
         });
         setSchools(newSchools);
+        resetForm();
       }
     } catch (error) {
       if (error.response.status === 409) {
@@ -97,7 +101,7 @@ export default function SchoolsPage() {
 
     setSubmitting(false);
   };
-  const handleSubmitUpdate = async (values, { setSubmitting, setErrors }) => {
+  const handleSubmitUpdate = async (values, { setSubmitting, resetForm }) => {
     try {
       const { status } = await fetchData({
         action: 'updateSchool',
@@ -121,6 +125,7 @@ export default function SchoolsPage() {
             return item;
           }),
         );
+        resetForm();
       }
     } catch (error) {
       toast.error('Coś poszło nie tak. Spróbuj ponownie.', { autoClose: 5000 });
@@ -223,13 +228,13 @@ export default function SchoolsPage() {
                     </div>
                     <DefaultButton
                       text={
-                        schoolState.editId === undefined
-                          ? 'Dodaj szkołę'
-                          : 'Akualizuj szkołę'
+                        schoolState.editId === undefined ? 'Dodaj' : 'Akualizuj'
                       }
                       type={'submit'}
                       isLoading={isSubmitting}
-                      disabled={errors.name || values.name.length === 0}
+                      disabled={
+                        errors.name || values.name.length === 0 || isSubmitting
+                      }
                     />
                   </form>
                 )}

@@ -1,4 +1,4 @@
-import fetchData from '../../fetchData';
+import fetchData from '../fetchData';
 
 const getSchools = async () => {
   try {

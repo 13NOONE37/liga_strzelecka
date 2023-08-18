@@ -22,7 +22,7 @@ export default function AdminSidebar() {
       icon: <Timeline />,
     },
     {
-      path: '/admin/competitions',
+      path: '/admin/contests',
       name: 'Zawody',
       icon: <Trophy />,
     },

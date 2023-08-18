@@ -1,5 +1,5 @@
 import AdminPage from '../admin/AdminPage';
-import CompetitionsPage from '../admin/competitions/CompetitionsPage';
+import ContestsPage from '../admin/contests/ContestsPage';
 import DashboardPage from '../admin/dashboard/DashboardPage';
 import HelpPage from '../admin/help/HelpPage';
 import ResultsPage from '../admin/results/ResultsPage';
@@ -33,8 +33,8 @@ const Pages = {
           element: <ResultsPage />,
         },
         {
-          path: '/admin/competitions',
-          element: <CompetitionsPage />,
+          path: '/admin/contests',
+          element: <ContestsPage />,
         },
         {
           path: '/admin/shooters',

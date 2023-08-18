@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useReducer,
   useRef,
+  useState,
 } from 'react';
 import FlipMove from 'react-flip-move';
 import cx from 'classnames';
@@ -418,6 +419,7 @@ function ConfirmDelete({
   setElementsState,
   handleDelete,
 }) {
+  const [isLoading, setIsLoading] = useState(false);
   const currentUser =
     elementsState.toDeleteId &&
     shooters.find((shooter) => shooter.shooter_id === elementsState.toDeleteId);
@@ -446,12 +448,15 @@ function ConfirmDelete({
       secondaryText={'Anuluj'}
       primaryText={'Usuń'}
       handleClose={() => {
+        setIsLoading(false);
         setElementsState({
           showDeleteModal: false,
           toDeleteId: undefined,
         });
       }}
+      isLoading={isLoading}
       handleConfirm={() => {
+        setIsLoading(true);
         if (elementsState.toDeleteId) {
           return handleDelete(elementsState.toDeleteId);
         }

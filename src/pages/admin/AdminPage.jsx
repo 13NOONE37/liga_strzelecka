@@ -6,9 +6,10 @@ import AdminSidebar from '../../components/adminSidebar/AdminSidebar';
 import styles from './AdminPage.module.css';
 import DataContext from '../../store/DataContext';
 import fetchData from '../../utils/fetchData';
-import getSchools from '../../utils/endpoints/schools/getSchools';
-import getShooters from '../../utils/endpoints/shooters/getShooters';
+import getSchools from '../../utils/endpoints/getSchools';
+import getShooters from '../../utils/endpoints/getShooters';
 import FocusTrap from 'focus-trap-react';
+import getContests from '../../utils/endpoints/getContests';
 
 export default function AdminPage() {
   const [preIsLoading, setPreIsLoading] = useState(true);
@@ -21,6 +22,7 @@ export default function AdminPage() {
 
   const [schools, setSchools] = useState(null);
   const [shooters, setShooters] = useState(null);
+  const [contests, setContests] = useState(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -45,7 +47,7 @@ export default function AdminPage() {
         }
         setLoading((prev) => ({
           ...prev,
-          step: 0.5,
+          step: 0.33,
           information: 'Trwa ładowanie strzelców',
         }));
 
@@ -61,6 +63,25 @@ export default function AdminPage() {
           setShooters(shooters);
         } else {
           setShooters([]);
+        }
+        setLoading((prev) => ({
+          ...prev,
+          step: 0.66,
+          information: 'Trwa ładowanie zawodów',
+        }));
+
+        //Fetch contests
+        let contests = await getContests();
+        contests = contests.data.map((item, index) => {
+          item.index = index + 1;
+          item.checked = false;
+          item.visible = true;
+          return item;
+        });
+        if (contests instanceof Array) {
+          setContests(contests);
+        } else {
+          setContests([]);
         }
 
         //Finish animation
@@ -98,6 +119,8 @@ export default function AdminPage() {
         setSchools,
         shooters,
         setShooters,
+        contests,
+        setContests,
       }}
     >
       <div className={styles.container}>

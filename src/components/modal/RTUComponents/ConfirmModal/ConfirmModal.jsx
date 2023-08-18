@@ -12,6 +12,7 @@ export default function ConfirmModal({
   content,
   primaryText,
   secondaryText,
+  isLoading,
 }) {
   return (
     <Modal handleClose={handleClose}>
@@ -36,6 +37,7 @@ export default function ConfirmModal({
             text={primaryText}
             additionalClasses={[styles.primary]}
             action={handleConfirm}
+            isLoading={isLoading}
           />
         </div>
       )}

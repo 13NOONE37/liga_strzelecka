@@ -86,7 +86,7 @@ export default function ShootersPage() {
     }
     return errors;
   };
-  const handleSubmitAdd = async (values, { setSubmitting }) => {
+  const handleSubmitAdd = async (values, { setSubmitting, resetForm }) => {
     try {
       const newShooters = [...shooters];
       const id = uuidv4();
@@ -116,6 +116,7 @@ export default function ShootersPage() {
           preShowModal: false,
         });
         setShooters(newShooters);
+        resetForm();
       }
     } catch (error) {
       toast.error('Coś poszło nie tak. Spróbuj ponownie.', {
@@ -124,10 +125,9 @@ export default function ShootersPage() {
         pauseOnHover: false,
       });
     }
-
     setSubmitting(false);
   };
-  const handleSubmitUpdate = async (values, { setSubmitting, setErrors }) => {
+  const handleSubmitUpdate = async (values, { setSubmitting, resetForm }) => {
     try {
       const { status } = await fetchData({
         action: 'updateShooter',
@@ -157,6 +157,7 @@ export default function ShootersPage() {
             return item;
           }),
         );
+        resetForm();
       }
     } catch (error) {
       toast.error('Coś poszło nie tak. Spróbuj ponownie.', {
@@ -368,12 +369,13 @@ export default function ShootersPage() {
                     <DefaultButton
                       text={
                         shooterState.editId === undefined
-                          ? 'Dodaj strzelca'
-                          : 'Akualizuj dane'
+                          ? 'Dodaj'
+                          : 'Akualizuj'
                       }
                       type={'submit'}
                       isLoading={isSubmitting}
                       disabled={
+                        isSubmitting ||
                         Object.values(errors).length > 0 ||
                         Object.values(touched).length === 0
                       }

@@ -1,0 +1,287 @@
+.container {
+  border: 1px solid #fff;
+  border-radius: 10px;
+  width: 100%;
+  padding: 1em;
+}
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.controls--date {
+  width: 100%;
+  padding: 1em;
+
+  background-color: transparent;
+
+  text-align: start;
+  font-size: 1em;
+  color: #fff;
+  border-radius: 10px;
+
+  letter-spacing: 0.8px;
+}
+.switchers {
+  display: flex;
+  gap: 4px;
+}
+.switchers button {
+  cursor: pointer;
+  width: 38px;
+  height: 38px;
+  background-color: transparent;
+  border: 1px solid transparent;
+  outline: none;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+}
+.switchers button:hover {
+  background-color: hsla(234, 14%, 71%, 0.1);
+}
+.switchers button:focus {
+  border-color: hsla(234, 14%, 71%, 0.2);
+}
+.switchers button:active {
+  background-color: hsla(234, 14%, 71%, 0.05);
+}
+.switchers svg {
+  width: 100%;
+  height: 100%;
+  fill: hsla(234, 14%, 71%, 0.8);
+}
+
+.switchers--up svg {
+  /* transform: rotate(180deg); */
+  transform: rotate(90deg);
+}
+.switchers--down svg {
+  transform: rotate(270deg);
+}
+.names {
+  cursor: default;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 6px;
+  place-items: center;
+
+  font-family: 'DM Sans', monospace;
+  color: hsla(234, 14%, 71%, 1);
+  text-transform: lowercase;
+  font-size: 12px;
+  margin-top: 1.2em;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 2px;
+
+  margin-top: 0.5em;
+  /* padding-bottom: 1em; */
+}
+
+.days--day {
+  cursor: pointer;
+  border: 2px solid transparent;
+  outline: none;
+
+  background-color: transparent;
+
+  font-size: 12px;
+  color: #fff;
+
+  padding: 12px;
+  border-radius: 10px;
+}
+.days--day__grey {
+  color: hsla(234, 14%, 71%, 1);
+}
+.days--day:hover {
+  background-color: hsla(234, 14%, 71%, 0.2);
+  color: #fff;
+}
+.days--day:focus {
+  border-color: hsla(234, 14%, 71%, 0.2);
+}
+.days--day:active {
+  background-color: hsla(234, 14%, 71%, 0.1);
+  color: #fff;
+}
+
+.days--day__currentSelected {
+  border-color: transparent !important;
+  background-color: hsla(245, 100%, 66%, 1) !important;
+  color: #fff !important;
+}
+.selectedDate {
+  cursor: default;
+  text-align: center;
+  color: hsla(234, 14%, 71%, 1);
+  text-transform: lowercase;
+  font-size: 12px;
+  margin-top: 1.5em;
+}
+.selectedDate::first-letter {
+  text-transform: uppercase;
+}
+
+/*.today button {
+    text-transform: lowercase;
+  } */
+
+/*
+  .container {
+  border: 1px solid #fff;
+  border-radius: 10px;
+  width: 310px;
+  padding: 0 1em;
+  padding-top: 1em;
+}
+.today {
+  font-size: 0.9rem;
+
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-weight: 500;
+}
+.today button {
+  text-transform: lowercase;
+  font-size: 0.9rem;
+}
+.today button:hover {
+}
+.today button:focus {
+}
+.today button:active {
+}
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.controls--date {
+  width: 100%;
+  padding: 1em;
+
+  background-color: transparent;
+
+  text-align: start;
+  font-size: 1em;
+  color: #fff;
+  border-radius: 10px;
+
+  letter-spacing: 0.8px;
+}
+.switchers {
+  display: flex;
+  gap: 4px;
+}
+.switchers button {
+  cursor: pointer;
+  width: 38px;
+  height: 38px;
+  background-color: transparent;
+  border: 1px solid transparent;
+  outline: none;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+}
+.switchers button:hover {
+  background-color: hsla(234, 14%, 71%, 0.1);
+}
+.switchers button:focus {
+  border-color: hsla(234, 14%, 71%, 0.2);
+}
+.switchers button:active {
+  background-color: hsla(234, 14%, 71%, 0.05);
+}
+.switchers svg {
+  width: 100%;
+  height: 100%;
+  fill: hsla(234, 14%, 71%, 0.8);
+}
+.switchers--up svg {
+  transform: rotate(180deg);
+}
+.switchers--down {
+}
+.names {
+  cursor: default;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 6px;
+  place-items: center;
+
+  font-family: 'DM Sans', monospace;
+  color: hsla(234, 14%, 71%, 1);
+  text-transform: lowercase;
+  font-size: 12px;
+  margin-top: 1.2em;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 4px;
+
+  margin-top: 0.5em;
+  padding-bottom: 1em;
+}
+
+.days--day {
+  cursor: pointer;
+  border: 2px solid transparent;
+  outline: none;
+
+  background-color: transparent;
+
+  font-size: 12px;
+  color: #fff;
+
+  padding: 0.8em;
+  border-radius: 50%;
+}
+.days--day__grey {
+  color: hsla(234, 14%, 71%, 1);
+}
+.days--day:hover {
+  background-color: hsla(234, 14%, 71%, 0.2);
+  color: #fff;
+}
+.days--day:focus {
+  border-color: hsla(234, 14%, 71%, 0.2);
+}
+.days--day:active {
+  background-color: hsla(234, 14%, 71%, 0.1);
+  color: #fff;
+}
+
+.days--day__currentSelected {
+  border-color: hsla(245, 100%, 66%, 1) !important;
+  color: #8176ff !important;
+}
+.days--day__currentDay {
+  border-color: transparent !important;
+  background-color: hsla(245, 100%, 66%, 1) !important;
+  color: #fff !important;
+}
+
+.selectedDate {
+  cursor: default;
+  text-align: center;
+  color: hsla(234, 14%, 71%, 1);
+  text-transform: lowercase;
+  font-size: 12px;
+  margin-bottom: 1.2em;
+}
+.selectedDate::first-letter {
+  text-transform: uppercase;
+}
+
+
+  */
