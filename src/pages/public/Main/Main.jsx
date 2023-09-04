@@ -1,10 +1,10 @@
 import React from 'react';
-import styles from './Main.module.css';
+import { useLayoutEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 export default function Main() {
-  return (
-    <div className={styles.bulb} style={{ color: 'white' }}>
-      {' '}
-      ładownaie...main page not logged
-    </div>
-  );
+  const navigate = useNavigate();
+  useLayoutEffect(() => {
+    navigate('/auth');
+  }, []);
+  return <div></div>;
 }

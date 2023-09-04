@@ -1,6 +1,6 @@
 .container {
   position: relative;
-  height: 26px;
+  height: 32px;
 }
 .contextMenu {
   position: absolute;
@@ -38,7 +38,7 @@
 }
 
 .contextMenu__bottom {
-  left: calc(-100% - 27px);
+  left: calc(-100% - 18px);
   top: calc(100% + 8px);
 }
 .contextMenu__bottom::before {
@@ -65,7 +65,7 @@
 }
 
 .contextMenu__top {
-  left: calc(-100% - 27px);
+  left: calc(-100% - 18px);
   bottom: calc(100% + 12px);
 }
 .contextMenu__top::before {

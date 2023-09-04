@@ -1,7 +1,7 @@
 <?php
 function isAuth()
 {
-    if (isset($_SESSION['id_admina'])) {
+    if (isset($_SESSION['admin_id'])) {
         return true;
     }
 }

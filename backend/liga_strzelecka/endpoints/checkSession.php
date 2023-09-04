@@ -4,10 +4,10 @@ function checkSession()
     if (IsAuth()) {
         $data = new stdClass();
 
-        $data->id_admina = $_SESSION['id_admina'];
+        $data->admin_id = $_SESSION['admin_id'];
         $data->login = $_SESSION['login'];
 
-        handleResponse(200, $data);
+        handleResponse(200, 'Zalogowano pomyślnie', $data);
     } else {
         handleResponse(401, 'Nie zalogowano');
     }

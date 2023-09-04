@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 01, 2023 at 03:08 PM
+-- Generation Time: Sep 04, 2023 at 09:41 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -24,118 +24,102 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admini`
+-- Table structure for table `admins`
 --
 
-CREATE TABLE `admini` (
-  `id_admina` int(11) NOT NULL,
+CREATE TABLE `admins` (
+  `admin_id` char(36) NOT NULL,
   `login` text NOT NULL,
-  `haslo` text NOT NULL
+  `password` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 --
--- Dumping data for table `admini`
+-- Dumping data for table `admins`
 --
 
-INSERT INTO `admini` (`id_admina`, `login`, `haslo`) VALUES
-(1, 'login', '$2a$12$DfDy4NZPvi4QqfN/s/KFDeDHMJRmZ2QbzEUrNcLrjxkrNWSe5LZ5q');
+INSERT INTO `admins` (`admin_id`, `login`, `password`) VALUES
+('1', 'login', '$2a$12$mPgy.0ovnvKedIDtUcYwQeyCCr5M0uQmMho2IQ59a/rjPXeel/WXS'),
+('a2b8cbbe-2bae-11ee-b16d-001a7dda7113', 'oliwer', '$2a$12$mPgy.0ovnvKedIDtUcYwQeyCCr5M0uQmMho2IQ59a/rjPXeel/WXS');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `druzyny`
+-- Table structure for table `contesters`
 --
 
-CREATE TABLE `druzyny` (
-  `id_druzyny` int(11) NOT NULL,
-  `id_szkoly` int(11) NOT NULL,
-  `id_zawodow` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `podium`
---
-
-CREATE TABLE `podium` (
-  `id_zawodow` int(11) NOT NULL,
-  `id_uzytkownika_miejsce_1` int(11) NOT NULL,
-  `id_uzytkownika_miejsce_2` int(11) NOT NULL,
-  `id_uzytkownika_miejsce_3` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `strzelcy`
---
-
-CREATE TABLE `strzelcy` (
-  `id_druzyny` int(11) NOT NULL,
-  `id_strzelec1` int(11) NOT NULL,
-  `id_strzelec2` int(11) NOT NULL,
-  `id_strzelec3` int(11) NOT NULL,
-  `id_strzelec4` int(11) NOT NULL,
-  `id_strzelec5` int(11) NOT NULL,
-  `id_strzelec6` int(11) NOT NULL
+CREATE TABLE `contesters` (
+  `team_id` char(36) NOT NULL,
+  `shooter_id` char(36) NOT NULL,
+  `isInTeam` tinyint(1) NOT NULL,
+  `shoot_1` int(11) DEFAULT NULL,
+  `shoot_2` int(11) DEFAULT NULL,
+  `shoot_3` int(11) DEFAULT NULL,
+  `shoot_4` int(11) DEFAULT NULL,
+  `shoot_5` int(11) DEFAULT NULL,
+  `shoot_6` int(11) DEFAULT NULL,
+  `shoot_7` int(11) DEFAULT NULL,
+  `shoot_8` int(11) DEFAULT NULL,
+  `shoot_9` int(11) DEFAULT NULL,
+  `shoot_10` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `szkoly`
+-- Table structure for table `contests`
 --
 
-CREATE TABLE `szkoly` (
-  `id_szkoly` int(11) NOT NULL,
-  `nazwa` text NOT NULL
+CREATE TABLE `contests` (
+  `contest_id` char(36) NOT NULL,
+  `date` date NOT NULL,
+  `location` char(36) NOT NULL,
+  `man_first_place_shooter_id` char(36) DEFAULT NULL,
+  `man_second_place_shooter_id` char(36) DEFAULT NULL,
+  `man_third_place_shooter_id` char(36) DEFAULT NULL,
+  `woman_first_place_shooter_id` char(36) DEFAULT NULL,
+  `woman_second_place_shooter_id` char(36) DEFAULT NULL,
+  `woman_third_place_shooter_id` char(36) DEFAULT NULL,
+  `first_place_team_id` char(36) DEFAULT NULL,
+  `second_place_team_id` char(36) DEFAULT NULL,
+  `third_place_team_id` char(36) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+
+-
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `schools`
+--
+
+CREATE TABLE `schools` (
+  `school_id` char(36) NOT NULL,
+  `name` varchar(80) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `uzytkownicy`
+-- Table structure for table `shooters`
 --
 
-CREATE TABLE `uzytkownicy` (
-  `id_uzytkownika` int(11) NOT NULL,
-  `imie` varchar(30) NOT NULL,
-  `nazwisko` varchar(30) NOT NULL,
-  `id_szkoly` int(11) NOT NULL,
-  `mezczyzna` tinyint(1) NOT NULL
+CREATE TABLE `shooters` (
+  `shooter_id` char(36) NOT NULL,
+  `school_id` char(36) NOT NULL,
+  `firstName` varchar(32) NOT NULL,
+  `secondName` varchar(32) NOT NULL,
+  `isMan` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `wyniki`
+-- Table structure for table `teams`
 --
 
-CREATE TABLE `wyniki` (
-  `id_uzytkownika` int(11) NOT NULL,
-  `id_druzyny` int(11) NOT NULL COMMENT 'Jesli brak id_druzyny jest to strzal indiwidualny',
-  `Strzal1` int(11) NOT NULL,
-  `Strzal2` int(11) NOT NULL,
-  `Strzal3` int(11) NOT NULL,
-  `Strzal4` int(11) NOT NULL,
-  `Strzal5` int(11) NOT NULL,
-  `Strzal6` int(11) NOT NULL,
-  `Strzal7` int(11) NOT NULL,
-  `Strzal8` int(11) NOT NULL,
-  `Strzal9` int(11) NOT NULL,
-  `Strzal10` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `zawody`
---
-
-CREATE TABLE `zawody` (
-  `id_zawodow` int(11) NOT NULL,
-  `data` date NOT NULL
+CREATE TABLE `teams` (
+  `team_id` char(36) NOT NULL,
+  `school_id` char(36) NOT NULL,
+  `contest_id` char(36) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 --
@@ -143,145 +127,95 @@ CREATE TABLE `zawody` (
 --
 
 --
--- Indexes for table `admini`
+-- Indexes for table `admins`
 --
-ALTER TABLE `admini`
-  ADD PRIMARY KEY (`id_admina`),
+ALTER TABLE `admins`
+  ADD PRIMARY KEY (`admin_id`),
   ADD UNIQUE KEY `login` (`login`) USING HASH;
 
 --
--- Indexes for table `druzyny`
+-- Indexes for table `contesters`
 --
-ALTER TABLE `druzyny`
-  ADD PRIMARY KEY (`id_druzyny`),
-  ADD KEY `id_szkoly` (`id_szkoly`),
-  ADD KEY `id_zawodow` (`id_zawodow`);
+ALTER TABLE `contesters`
+  ADD KEY `shooter_id` (`shooter_id`),
+  ADD KEY `team_id` (`team_id`);
 
 --
--- Indexes for table `podium`
+-- Indexes for table `contests`
 --
-ALTER TABLE `podium`
-  ADD KEY `id_zawodow` (`id_zawodow`),
-  ADD KEY `id_uzytkownika_miejsce_1` (`id_uzytkownika_miejsce_1`),
-  ADD KEY `id_uzytkownika_miejsce_2` (`id_uzytkownika_miejsce_2`),
-  ADD KEY `id_uzytkownika_miejsce_3` (`id_uzytkownika_miejsce_3`);
+ALTER TABLE `contests`
+  ADD PRIMARY KEY (`contest_id`),
+  ADD KEY `first_place_shooter_id` (`man_first_place_shooter_id`),
+  ADD KEY `second_place_shooter_id` (`man_second_place_shooter_id`),
+  ADD KEY `third_place_shooter_id` (`man_third_place_shooter_id`),
+  ADD KEY `woman_first_place_shooter_id` (`woman_first_place_shooter_id`),
+  ADD KEY `woman_second_place_shooter_id` (`woman_second_place_shooter_id`),
+  ADD KEY `woman_third_place_shooter_id` (`woman_third_place_shooter_id`),
+  ADD KEY `location` (`location`),
+  ADD KEY `contests_ibfk_7` (`first_place_team_id`),
+  ADD KEY `contests_ibfk_8` (`second_place_team_id`),
+  ADD KEY `contests_ibfk_9` (`third_place_team_id`);
 
 --
--- Indexes for table `strzelcy`
+-- Indexes for table `schools`
 --
-ALTER TABLE `strzelcy`
-  ADD KEY `id_druzyny` (`id_druzyny`),
-  ADD KEY `id_strzelec1` (`id_strzelec1`),
-  ADD KEY `id_strzelec2` (`id_strzelec2`),
-  ADD KEY `id_strzelec3` (`id_strzelec3`),
-  ADD KEY `id_strzelec4` (`id_strzelec4`),
-  ADD KEY `id_strzelec5` (`id_strzelec5`),
-  ADD KEY `id_strzelec6` (`id_strzelec6`);
+ALTER TABLE `schools`
+  ADD PRIMARY KEY (`school_id`),
+  ADD UNIQUE KEY `name` (`name`);
 
 --
--- Indexes for table `szkoly`
+-- Indexes for table `shooters`
 --
-ALTER TABLE `szkoly`
-  ADD PRIMARY KEY (`id_szkoly`);
+ALTER TABLE `shooters`
+  ADD PRIMARY KEY (`shooter_id`),
+  ADD KEY `school_id` (`school_id`);
 
 --
--- Indexes for table `uzytkownicy`
+-- Indexes for table `teams`
 --
-ALTER TABLE `uzytkownicy`
-  ADD PRIMARY KEY (`id_uzytkownika`),
-  ADD KEY `id_szkoly` (`id_szkoly`);
-
---
--- Indexes for table `wyniki`
---
-ALTER TABLE `wyniki`
-  ADD KEY `id_druzyny` (`id_druzyny`),
-  ADD KEY `id_uzytkownika` (`id_uzytkownika`);
-
---
--- Indexes for table `zawody`
---
-ALTER TABLE `zawody`
-  ADD PRIMARY KEY (`id_zawodow`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `admini`
---
-ALTER TABLE `admini`
-  MODIFY `id_admina` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `druzyny`
---
-ALTER TABLE `druzyny`
-  MODIFY `id_druzyny` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `szkoly`
---
-ALTER TABLE `szkoly`
-  MODIFY `id_szkoly` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `uzytkownicy`
---
-ALTER TABLE `uzytkownicy`
-  MODIFY `id_uzytkownika` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `zawody`
---
-ALTER TABLE `zawody`
-  MODIFY `id_zawodow` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `teams`
+  ADD PRIMARY KEY (`team_id`),
+  ADD KEY `contest_id` (`contest_id`),
+  ADD KEY `school_id` (`school_id`);
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `druzyny`
+-- Constraints for table `contesters`
 --
-ALTER TABLE `druzyny`
-  ADD CONSTRAINT `druzyny_ibfk_1` FOREIGN KEY (`id_szkoly`) REFERENCES `szkoly` (`id_szkoly`),
-  ADD CONSTRAINT `druzyny_ibfk_2` FOREIGN KEY (`id_zawodow`) REFERENCES `zawody` (`id_zawodow`);
+ALTER TABLE `contesters`
+  ADD CONSTRAINT `contesters_ibfk_1` FOREIGN KEY (`shooter_id`) REFERENCES `shooters` (`shooter_id`),
+  ADD CONSTRAINT `contesters_ibfk_2` FOREIGN KEY (`team_id`) REFERENCES `teams` (`team_id`);
 
 --
--- Constraints for table `podium`
+-- Constraints for table `contests`
 --
-ALTER TABLE `podium`
-  ADD CONSTRAINT `podium_ibfk_1` FOREIGN KEY (`id_zawodow`) REFERENCES `zawody` (`id_zawodow`),
-  ADD CONSTRAINT `podium_ibfk_2` FOREIGN KEY (`id_uzytkownika_miejsce_1`) REFERENCES `uzytkownicy` (`id_uzytkownika`),
-  ADD CONSTRAINT `podium_ibfk_3` FOREIGN KEY (`id_uzytkownika_miejsce_2`) REFERENCES `uzytkownicy` (`id_uzytkownika`),
-  ADD CONSTRAINT `podium_ibfk_4` FOREIGN KEY (`id_uzytkownika_miejsce_3`) REFERENCES `uzytkownicy` (`id_uzytkownika`);
+ALTER TABLE `contests`
+  ADD CONSTRAINT `contests_ibfk_1` FOREIGN KEY (`man_first_place_shooter_id`) REFERENCES `shooters` (`shooter_id`),
+  ADD CONSTRAINT `contests_ibfk_10` FOREIGN KEY (`location`) REFERENCES `schools` (`school_id`),
+  ADD CONSTRAINT `contests_ibfk_2` FOREIGN KEY (`man_second_place_shooter_id`) REFERENCES `shooters` (`shooter_id`),
+  ADD CONSTRAINT `contests_ibfk_3` FOREIGN KEY (`man_third_place_shooter_id`) REFERENCES `shooters` (`shooter_id`),
+  ADD CONSTRAINT `contests_ibfk_4` FOREIGN KEY (`woman_first_place_shooter_id`) REFERENCES `shooters` (`shooter_id`),
+  ADD CONSTRAINT `contests_ibfk_5` FOREIGN KEY (`woman_second_place_shooter_id`) REFERENCES `shooters` (`shooter_id`),
+  ADD CONSTRAINT `contests_ibfk_6` FOREIGN KEY (`woman_third_place_shooter_id`) REFERENCES `shooters` (`shooter_id`),
+  ADD CONSTRAINT `contests_ibfk_7` FOREIGN KEY (`first_place_team_id`) REFERENCES `schools` (`school_id`),
+  ADD CONSTRAINT `contests_ibfk_8` FOREIGN KEY (`second_place_team_id`) REFERENCES `schools` (`school_id`),
+  ADD CONSTRAINT `contests_ibfk_9` FOREIGN KEY (`third_place_team_id`) REFERENCES `schools` (`school_id`);
 
 --
--- Constraints for table `strzelcy`
+-- Constraints for table `shooters`
 --
-ALTER TABLE `strzelcy`
-  ADD CONSTRAINT `strzelcy_ibfk_1` FOREIGN KEY (`id_druzyny`) REFERENCES `druzyny` (`id_druzyny`),
-  ADD CONSTRAINT `strzelcy_ibfk_2` FOREIGN KEY (`id_strzelec1`) REFERENCES `uzytkownicy` (`id_uzytkownika`),
-  ADD CONSTRAINT `strzelcy_ibfk_3` FOREIGN KEY (`id_strzelec2`) REFERENCES `uzytkownicy` (`id_uzytkownika`),
-  ADD CONSTRAINT `strzelcy_ibfk_4` FOREIGN KEY (`id_strzelec3`) REFERENCES `uzytkownicy` (`id_uzytkownika`),
-  ADD CONSTRAINT `strzelcy_ibfk_5` FOREIGN KEY (`id_strzelec4`) REFERENCES `uzytkownicy` (`id_uzytkownika`),
-  ADD CONSTRAINT `strzelcy_ibfk_6` FOREIGN KEY (`id_strzelec5`) REFERENCES `uzytkownicy` (`id_uzytkownika`),
-  ADD CONSTRAINT `strzelcy_ibfk_7` FOREIGN KEY (`id_strzelec6`) REFERENCES `uzytkownicy` (`id_uzytkownika`);
+ALTER TABLE `shooters`
+  ADD CONSTRAINT `shooters_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `schools` (`school_id`);
 
 --
--- Constraints for table `uzytkownicy`
+-- Constraints for table `teams`
 --
-ALTER TABLE `uzytkownicy`
-  ADD CONSTRAINT `uzytkownicy_ibfk_1` FOREIGN KEY (`id_szkoly`) REFERENCES `szkoly` (`id_szkoly`);
-
---
--- Constraints for table `wyniki`
---
-ALTER TABLE `wyniki`
-  ADD CONSTRAINT `wyniki_ibfk_1` FOREIGN KEY (`id_druzyny`) REFERENCES `druzyny` (`id_druzyny`),
-  ADD CONSTRAINT `wyniki_ibfk_2` FOREIGN KEY (`id_uzytkownika`) REFERENCES `uzytkownicy` (`id_uzytkownika`);
+ALTER TABLE `teams`
+  ADD CONSTRAINT `teams_ibfk_1` FOREIGN KEY (`contest_id`) REFERENCES `contests` (`contest_id`),
+  ADD CONSTRAINT `teams_ibfk_2` FOREIGN KEY (`school_id`) REFERENCES `schools` (`school_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

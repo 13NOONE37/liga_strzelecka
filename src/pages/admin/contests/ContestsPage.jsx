@@ -1,4 +1,9 @@
-import React, { useContext, useEffect, useReducer } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useReducer,
+} from 'react';
 import cx from 'classnames';
 import { Formik } from 'formik';
 import { v4 as uuidv4 } from 'uuid';
@@ -18,6 +23,7 @@ import { toast } from 'react-toastify';
 import Select from '../../../components/select/Select';
 import SelectWithHeading from '../../../components/select/SelectWithHeading';
 import Calendar from '../../../components/Calendar/Calendar';
+import { Route } from 'react-router-dom';
 export default function ContestsPage() {
   const { schools, contests, setContests } = useContext(DataContext);
   const [contestsState, setContestsState] = useReducer(
@@ -27,6 +33,8 @@ export default function ContestsPage() {
       preShowModal: false,
       editId: undefined,
       isFocused: false,
+      seasons: null,
+      currentSeason: null,
     },
   );
 
@@ -38,9 +46,9 @@ export default function ContestsPage() {
   const currentDate = currentContest && currentContest.date.split('-');
 
   const formInitialValues = {
-    year: currentDate ? currentDate[0] : date.getFullYear(),
-    month: currentDate ? currentDate[1] : date.getMonth(),
-    day: currentDate ? currentDate[2] : date.getDate(),
+    year: currentDate ? Number(currentDate[0]) : date.getFullYear(),
+    month: currentDate ? Number(currentDate[1]) - 1 : date.getMonth(),
+    day: currentDate ? Number(currentDate[2]) : date.getDate(),
     school: currentContest
       ? {
           value: currentContest.location,
@@ -97,6 +105,7 @@ export default function ContestsPage() {
           preShowModal: false,
         });
         setContests(newContests);
+        getAndApplySeasons(newContests);
         resetForm();
       }
     } catch (error) {
@@ -128,18 +137,19 @@ export default function ContestsPage() {
         setContestsState({
           preShowModal: false,
         });
-        setContests((prev) =>
-          prev.map((item) => {
-            if (item.contest_id === contestsState.editId) {
-              return {
-                ...item,
-                location: values.school.value,
-                date: contestDate,
-              };
-            }
-            return item;
-          }),
-        );
+
+        const newContests = contests.map((item) => {
+          if (item.contest_id === contestsState.editId) {
+            return {
+              ...item,
+              location: values.school.value,
+              date: contestDate,
+            };
+          }
+          return item;
+        });
+        setContests(newContests);
+        getAndApplySeasons(newContests);
         resetForm();
       }
     } catch (error) {
@@ -148,9 +158,39 @@ export default function ContestsPage() {
 
     setSubmitting(false);
   };
+  const getAndApplySeasons = (contests) => {
+    const years = [];
+    const ranges = [];
 
-  useEffect(() => {
+    const data = contests.sort((a, b) => new Date(a.date) - new Date(b.date));
+    // const data = contests.sort((a, b) => +new Date(a.date) - +new Date(b.date));
+
+    if (new Date(data[0].date).getMonth() + 1 <= 8) {
+      years.push(new Date(data[0].date).getFullYear() - 1);
+    } else {
+      years.push(new Date(data[0].date).getFullYear());
+    }
+    if (new Date(data[data.length - 1].date).getMonth() + 1 >= 9) {
+      years.push(new Date(data[data.length - 1].date).getFullYear() + 1);
+    } else {
+      years.push(new Date(data[data.length - 1].date).getFullYear());
+    }
+    for (years[0]; years[0] < years[1]; years[0]++) {
+      ranges.push({
+        label: `${years[0]}/${(years[0] + 1).toString().slice(2)}`,
+        value: [
+          new Date(years[0], 8, 1).getTime(),
+          new Date(years[0] + 1, 7, 31).getTime(),
+        ],
+      });
+    }
+    ranges.reverse();
+    setContestsState({ seasons: ranges });
+  };
+
+  useLayoutEffect(() => {
     //Reset visibility and checkmark to default
+    getAndApplySeasons(contests);
     return () =>
       setContests((prev) =>
         prev.map((item) => ({
@@ -160,7 +200,6 @@ export default function ContestsPage() {
         })),
       );
   }, []);
-
   return (
     <AnimatedPage>
       <div className={styles.container}>
@@ -182,6 +221,11 @@ export default function ContestsPage() {
           })}
         >
           <ElementsList
+            currentSeason={contestsState.currentSeason}
+            setCurrentSeason={(value) =>
+              setContestsState({ currentSeason: value })
+            }
+            seasons={contestsState.seasons}
             setIsEditing={(value) =>
               setContestsState({
                 editId: value,

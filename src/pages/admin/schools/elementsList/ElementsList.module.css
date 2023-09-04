@@ -18,7 +18,7 @@
   place-items: center start;
   list-style: none;
   padding: 14px 28px;
-  padding-right: 30px;
+  padding-right: 40px;
 }
 .nav--element button {
   cursor: pointer;
@@ -52,9 +52,9 @@
 
   min-height: 310px;
   min-width: 600px;
-  height: calc(100vh - 355px);
+  height: calc(100vh - 342px);
   overflow: hidden auto;
-  padding-right: 30px;
+  padding-right: 40px;
   /* scroll-snap-type: y mandatory; */
 }
 .element {
@@ -83,10 +83,15 @@
 .element--more {
   cursor: pointer;
   background-color: transparent;
-  border: none;
+  border: 2px solid transparent;
+  border-radius: 10px;
+
   outline: none;
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
+}
+.element--more:focus {
+  border-color: hsla(234, 14%, 71%, 0.2);
 }
 .element--more:hover svg,
 .element--more:focus svg {

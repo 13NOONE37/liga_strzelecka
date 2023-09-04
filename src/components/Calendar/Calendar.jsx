@@ -27,6 +27,7 @@ const MONTH_NAMES = [
   'Listopad',
   'Grudzień',
 ];
+export const getMonthName = (month) => MONTH_NAMES[month];
 export default function Calendar({
   initRenderYear,
   initRenderMonth,
@@ -48,7 +49,6 @@ export default function Calendar({
   };
   const getDayIndex = (year, month, day) => new Date(year, month, day).getDay();
   const getDayName = (index) => DAYS_NAMES.at(index - 1);
-  const getMonthName = (month) => MONTH_NAMES[month];
 
   const handleMove = (goUp) => {
     const DIRECTION = goUp ? -1 : 1;
@@ -89,7 +89,6 @@ export default function Calendar({
   };
 
   useEffect(() => {
-    console.log(initRenderYear, initRenderMonth);
     setDateState({
       renderYear: initRenderYear,
       renderMonth: initRenderMonth,
@@ -151,6 +150,7 @@ export default function Calendar({
     </div>
   );
 }
+
 {
   /**
    * 

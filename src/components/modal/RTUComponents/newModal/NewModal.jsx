@@ -28,7 +28,6 @@ export default function NewModal({
       modalRef.current.classList.add(styles['newModal__hide']);
       setTimeout(() => {
         setShowModal(false);
-        console.log('in timeout');
       }, outTimeMs);
     }
   }, [preShowModal]);

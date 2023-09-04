@@ -1,8 +1,11 @@
 import AdminPage from '../admin/AdminPage';
 import ContestsPage from '../admin/contests/ContestsPage';
-import DashboardPage from '../admin/dashboard/DashboardPage';
 import HelpPage from '../admin/help/HelpPage';
-import ResultsPage from '../admin/results/ResultsPage';
+import ManagmentPage from '../admin/managment/ManagmentPage';
+import PodiumPage from '../admin/managment/podium/PodiumPage';
+import TeamsPage from '../admin/managment/teams/TeamsPage';
+import ResultsPage from '../admin/managment/results/ResultsPage';
+
 import SchoolsPage from '../admin/schools/SchoolsPage';
 import ShootersPage from '../admin/shooters/ShootersPage';
 import Auth from '../public/Auth/Auth';
@@ -24,28 +27,35 @@ const Pages = {
       path: '/admin',
       element: <AdminPage />,
       subPages: [
+        { path: '/contests', element: <ContestsPage /> },
         {
-          path: '/admin/dashboard',
-          element: <DashboardPage />,
+          path: '/contests/managment',
+          element: <ManagmentPage />,
+          subPages: [
+            {
+              path: '/teams/:id?',
+              element: <TeamsPage />,
+            },
+            {
+              path: '/results/:id?',
+              element: <ResultsPage />,
+            },
+            {
+              path: '/podium/:id?',
+              element: <PodiumPage />,
+            },
+          ],
         },
         {
-          path: '/admin/results',
-          element: <ResultsPage />,
-        },
-        {
-          path: '/admin/contests',
-          element: <ContestsPage />,
-        },
-        {
-          path: '/admin/shooters',
+          path: '/shooters',
           element: <ShootersPage />,
         },
         {
-          path: '/admin/schools',
+          path: '/schools',
           element: <SchoolsPage />,
         },
         {
-          path: '/admin/help',
+          path: '/help',
           element: <HelpPage />,
         },
       ],

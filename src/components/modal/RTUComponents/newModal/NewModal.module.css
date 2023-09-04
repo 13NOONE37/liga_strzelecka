@@ -64,6 +64,7 @@
 .newModal {
   display: grid;
   grid-template-rows: auto 1fr;
+  overflow: auto;
 }
 .closeBar {
   display: flex;

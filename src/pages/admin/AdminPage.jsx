@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import cx from 'classnames';
-
-import AdminSidebar from '../../components/adminSidebar/AdminSidebar';
 import styles from './AdminPage.module.css';
 import DataContext from '../../store/DataContext';
 import fetchData from '../../utils/fetchData';
@@ -10,6 +8,7 @@ import getSchools from '../../utils/endpoints/getSchools';
 import getShooters from '../../utils/endpoints/getShooters';
 import FocusTrap from 'focus-trap-react';
 import getContests from '../../utils/endpoints/getContests';
+import AdminSidebar from '../../components/AdminSidebar/AdminSidebar';
 
 export default function AdminPage() {
   const [preIsLoading, setPreIsLoading] = useState(true);
@@ -98,7 +97,6 @@ export default function AdminPage() {
           ),
           isError: true,
         }));
-        console.log(error);
       }
     };
 
@@ -125,9 +123,7 @@ export default function AdminPage() {
     >
       <div className={styles.container}>
         <AdminSidebar />
-        <main className={styles.main}>
-          <Outlet />
-        </main>
+        <main className={styles.main}>{!preIsLoading && <Outlet />} </main>
       </div>
       {isLoading && (
         <LoadingBar loading={loading} preIsLoading={preIsLoading} />

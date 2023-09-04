@@ -19,7 +19,7 @@ const ContextMenu = forwardRef(({ options, children }, ref) => {
   useDetectOutsideClick(containerRef, () => {
     setActive(false);
   });
-  //todo kiedy focusa nie ma na żadnym z tych elementów musimy zamknąć
+
   const handleResize = () => {
     if (!active) return;
 

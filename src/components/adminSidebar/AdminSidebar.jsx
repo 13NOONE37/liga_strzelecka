@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from 'react';
 import styles from './AdminSidebar.module.css';
 import cx from 'classnames';
-import { ReactComponent as Trophy } from '../../assets/icons/trophy.svg';
+import { ReactComponent as Swords } from '../../assets/icons/swords.svg';
 import { ReactComponent as School } from '../../assets/icons/school.svg';
 import { ReactComponent as Face } from '../../assets/icons/face.svg';
 import { ReactComponent as Timeline } from '../../assets/icons/timeline.svg';
@@ -16,15 +16,15 @@ export default function AdminSidebar() {
   const { setIsLogged, setUserInfo, userInfo } = useContext(GlobalContext);
   const defaultPathname = useLocation().pathname;
   const SIDEBAR_ELEMENTS = [
-    {
-      path: '/admin/results',
-      name: 'Wyniki',
-      icon: <Timeline />,
-    },
+    // {
+    //   path: '/admin/results',
+    //   name: 'Wyniki',
+    //   icon: <Timeline />,
+    // },
     {
       path: '/admin/contests',
       name: 'Zawody',
-      icon: <Trophy />,
+      icon: <Swords />,
     },
     {
       path: '/admin/shooters',
@@ -76,7 +76,7 @@ export default function AdminSidebar() {
                 onClick={(e) => handleActive(e, index)}
                 className={cx(styles['sidebar--nav--link'], {
                   [styles['sidebar--nav--link__active']]:
-                    item.path === defaultPathname,
+                    defaultPathname.includes(item.path),
                 })}
               >
                 {item.icon}

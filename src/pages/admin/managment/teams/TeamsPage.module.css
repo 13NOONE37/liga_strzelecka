@@ -1,0 +1,90 @@
+.container {
+  margin-top: 1rem;
+  position: relative;
+}
+.empty {
+  display: grid;
+  place-items: center;
+  color: #9c9ca5;
+  min-height: calc(400px - 2rem);
+}
+.addButton {
+  position: absolute;
+  right: 0;
+  top: calc(-146.2px + 1rem);
+}
+.section {
+  transition: width 0.25s ease-in-out;
+  will-change: width;
+}
+.teamsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+}
+
+@media (min-width: 1320px) {
+  .section__active {
+    width: calc(100% - 600px);
+  }
+}
+
+.table {
+  border: 2px solid #39394b;
+  border-radius: 10px;
+  overflow: hidden;
+  color: #fff;
+
+  width: 762.8px;
+}
+
+.table--nav {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  place-items: center;
+  padding: 0.2rem 1rem;
+
+  background-color: hsl(244, 20%, 22%);
+}
+
+.table--nav span {
+  text-align: center;
+  padding: 12px;
+}
+.teamName {
+  padding-left: 39.2px !important;
+}
+
+.table--results {
+}
+.table--row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.table--row--element {
+  color: #fff;
+  font-size: 16px;
+
+  display: grid;
+  place-items: center;
+  padding: 12px;
+}
+@media (max-width: 1060px) {
+  .table {
+    width: 100%;
+  }
+  .table--row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 800px) {
+  .table--row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.confirmDeleteName {
+  color: #fff;
+  font-weight: 500;
+}

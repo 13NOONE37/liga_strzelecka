@@ -7,7 +7,7 @@ const useLogout = async (setIsLogged, setUserInfo) => {
     setIsLogged(false);
     setUserInfo(null);
   } catch (error) {
-    console.log('coś poszło nie tak', error);
+    console.log(error);
   }
 };
 

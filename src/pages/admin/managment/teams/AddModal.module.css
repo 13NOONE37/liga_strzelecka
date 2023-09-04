@@ -1,0 +1,65 @@
+.table {
+  border-radius: 10px;
+  color: #fff;
+  width: 500px;
+}
+
+.table--nav {
+  display: grid;
+  background-color: hsl(244, 20%, 22%);
+}
+.table--nav span {
+  text-align: center;
+  padding: 12px;
+}
+
+.table--results {
+}
+.table--row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.table--row--element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* padding: 4px; */
+  border-left: 2px solid hsl(244, 20%, 22%);
+  border-right: 2px solid hsl(244, 20%, 22%);
+  border-bottom: 2px solid hsl(244, 20%, 22%);
+}
+
+.table--row--element:nth-child(even) {
+  border-left: unset;
+}
+
+.table--row--element__empty {
+  color: #9c9ca5;
+}
+
+.modalContent {
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+  grid-template-areas: 'school' 'team' 'individual' '__' 'add';
+  grid-gap: 1em;
+  place-items: center;
+  height: 100%;
+}
+.modalContent > button {
+  width: 100%;
+  grid-area: add;
+}
+.modalContent--field {
+  width: 100%;
+}
+.modalContent--field__school {
+  grid-area: school;
+}
+.modalContent--field__team {
+  grid-area: team;
+}
+.modalContent--field__individual {
+  grid-area: individual;
+}

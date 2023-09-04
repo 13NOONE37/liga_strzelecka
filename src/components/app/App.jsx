@@ -11,11 +11,12 @@ import { AnimatePresence } from 'framer-motion';
 import useSession from '../../utils/endpoints/useSession';
 import axios from 'axios';
 import { ToastContainer } from 'react-toastify';
+import fetchData from '../../utils/fetchData';
 
 function App() {
   axios.defaults.withCredentials = true; //We need to enable it for session support
 
-  const [isLogged, setIsLogged] = useState(false);
+  const [isLogged, setIsLogged] = useState(null);
   const [theme, setTheme] = useState('darkMode');
   const [userInfo, setUserInfo] = useState(null);
   // const [theme, setTheme] = useState(
@@ -39,7 +40,6 @@ function App() {
           setUserInfo,
         }}
       >
-        {/* second context will be in dashboard parent element to be only in admin mode */}
         <ToastContainer
           position="bottom-center"
           hideProgressBar={false}
@@ -53,22 +53,54 @@ function App() {
           <Routes>
             <Route path="*" element={<h2>Not found</h2>} />
             <Route path="/" element={<GuestRoute />}>
-              {Pages.guestPages.map(({ path, element, subPages }) => {
+              {Pages.guestPages.map((page1) => {
                 return (
-                  <Route path={path} element={element} key={path}>
-                    {subPages?.map(({ path, element }) => (
-                      <Route path={path} element={element} key={path} />
+                  <Route
+                    path={page1.path}
+                    element={page1.element}
+                    key={page1.path}
+                  >
+                    {page1.subPages?.map((page2) => (
+                      <Route
+                        path={`${page1.path}${page2.path}`}
+                        element={page2.element}
+                        key={`${page1.path}${page2.path}`}
+                      >
+                        {page2.subPages?.map((page3) => (
+                          <Route
+                            path={`${page1.path}${page2.path}${page3.path}`}
+                            element={page3.element}
+                            key={`${page1.path}${page2.path}${page3.path}`}
+                          />
+                        ))}
+                      </Route>
                     ))}
                   </Route>
                 );
               })}
             </Route>
             <Route path="/" element={<AuthRoute />}>
-              {Pages.authPages.map(({ path, element, subPages }) => {
+              {Pages.authPages.map((page1) => {
                 return (
-                  <Route path={path} element={element} key={path}>
-                    {subPages.map(({ path, element }) => (
-                      <Route path={path} element={element} key={path} />
+                  <Route
+                    path={page1.path}
+                    element={page1.element}
+                    key={page1.path}
+                  >
+                    {page1.subPages.map((page2) => (
+                      <Route
+                        path={`${page1.path}${page2.path}`}
+                        element={page2.element}
+                        key={`${page1.path}${page2.path}`}
+                      >
+                        {page2.subPages?.map((page3) => (
+                          <Route
+                            path={`${page1.path}${page2.path}${page3.path}`}
+                            element={page3.element}
+                            key={`${page1.path}${page2.path}${page3.path}`}
+                          />
+                        ))}
+                      </Route>
                     ))}
                   </Route>
                 );

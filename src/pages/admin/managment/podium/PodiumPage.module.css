@@ -1,0 +1,73 @@
+.container {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.podiumSelect {
+  width: 100%;
+  width: 762.8px;
+}
+.table {
+  border: 2px solid #39394b;
+  border-radius: 10px;
+  color: #fff;
+  width: 762.8px;
+}
+
+.table--nav {
+  display: grid;
+  grid-template-columns: 100px 1fr 75px;
+  border-bottom: 2px solid #39394b;
+  background-color: hsl(244, 20%, 22%);
+  border-radius: 10px 10px 0 0;
+}
+
+.table--nav span {
+  text-align: center;
+  padding: 12px;
+}
+
+.table--nav span:first-child {
+  border-right: 2px solid #39394b;
+}
+
+.table--results {
+}
+.table--results::-webkit-scrollbar {
+  border-radius: 0 0 10px 0;
+}
+.table--results::-webkit-scrollbar-thumb {
+  border-radius: 0 0 10px 0;
+}
+.table--row {
+  display: grid;
+  grid-template-columns: 100px 1fr 75px;
+  border-bottom: 2px solid #39394b;
+}
+.table--row:last-child {
+  border-bottom: unset;
+}
+.table--row--element {
+  display: grid;
+  place-items: center;
+  padding: 12px;
+
+  transition: all 0.15s ease-out;
+}
+
+.table--row--element:first-child {
+  border-right: 2px solid #39394b;
+}
+.gold {
+  border-left: 8px solid #fec403;
+  /* border-right: 8px solid #fec403; */
+}
+.silver {
+  border-left: 8px solid #cccccc;
+  /* border-right: 8px solid #cccccc; */
+}
+.bronze {
+  border-left: 8px solid #fb9e67;
+  /* border-right: 8px solid #fb9e67; */
+}

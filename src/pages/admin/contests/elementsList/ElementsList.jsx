@@ -14,6 +14,9 @@ import { ReactComponent as MoreIcon } from '../../../../assets/icons/more.svg';
 import { ReactComponent as DeleteIcon } from '../../../../assets/icons/delete.svg';
 import { ReactComponent as EditIcon } from '../../../../assets/icons/edit.svg';
 import { ReactComponent as DropDownIcon } from '../../../../assets/icons/arrow_drop_down.svg';
+import { ReactComponent as ThrophyIcon } from '../../../../assets/icons/trophy.svg';
+import { ReactComponent as GroupIcon } from '../../../../assets/icons/groups.svg';
+import { ReactComponent as ResultIcon } from '../../../../assets/icons/table.svg';
 
 import Checkbox from '../../../../components/checkbox/Checkbox';
 import DefaultButton, {
@@ -29,23 +32,32 @@ import DataContext from '../../../../store/DataContext';
 import getVisiblityInfo from '../../../../utils/getVisiblityInfo';
 import Select from '../../../../components/select/Select';
 import SelectWithHeading from '../../../../components/select/SelectWithHeading';
+import { getMonthName } from '../../../../components/Calendar/Calendar';
+import { useNavigate } from 'react-router-dom';
 
-export default function ElementsList({ setIsEditing }) {
+export default function ElementsList({
+  seasons,
+  currentSeason,
+  setCurrentSeason,
+  setIsEditing,
+}) {
   const { schools, contests, setContests } = useContext(DataContext);
   const [elementsState, setElementsState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
       showDeleteModal: false,
       filters: {
-        date: false, //true=asc, false=desc, null=inactive
+        date: true, //true=asc, false=desc, null=inactive
+        location: null,
       },
       toDeleteId: undefined,
     },
   );
-  const setFiltering = (dateState) => {
+  const setFiltering = (dateState, locationState) => {
     setElementsState({
       filters: {
         date: dateState,
+        location: locationState,
       },
     });
   };
@@ -81,22 +93,21 @@ export default function ElementsList({ setIsEditing }) {
     return contests;
   };
   const handleDelete = (id) => {
-    return;
     const idsToDeleteList = [];
     let idsToFilterList = [];
 
     if (id) {
       idsToDeleteList.push(
-        fetchData({ action: 'deleteSchool', school_id: id }),
+        fetchData({ action: 'deleteContest', contest_id: id }),
       );
       idsToFilterList.push(id);
     } else {
       contests.forEach((item) => {
         if (item.checked && item.visible) {
           idsToDeleteList.push(
-            fetchData({ action: 'deleteSchool', school_id: item.school_id }),
+            fetchData({ action: 'deleteContest', contest_id: item.contest_id }),
           );
-          idsToFilterList.push(item.school_id);
+          idsToFilterList.push(item.contest_id);
         }
       });
     }
@@ -105,30 +116,19 @@ export default function ElementsList({ setIsEditing }) {
       .then((response) => {
         response.forEach((result, index) => {
           if (result.status === 'rejected') {
-            if (result.reason.response.status === 409) {
-              toast.error(
-                `Nie można usunąć szkoły "${
-                  contests.find((v) => v.school_id === idsToFilterList[index])
-                    .name
-                }" ponieważ wciąż są do niej przypisani strzelcy.`,
-                {
-                  autoClose: 5000,
-                },
-              );
-            } else {
-              toast.error(`Coś poszło nie tak. Spróbuj ponownie."`, {
-                autoClose: 5000,
-              });
-            }
+            toast.error(`Coś poszło nie tak. Spróbuj ponownie."`, {
+              autoClose: 5000,
+            });
+
             idsToFilterList = idsToFilterList.filter(
               (_, index2) => index !== index2,
             );
           }
         });
 
-        setSchools((prev) =>
+        setContests((prev) =>
           prev
-            .filter((item) => !idsToFilterList.includes(item.school_id))
+            .filter((item) => !idsToFilterList.includes(item.contest_id))
             .map((item) => {
               return { ...item, checked: false };
             }),
@@ -146,11 +146,10 @@ export default function ElementsList({ setIsEditing }) {
       );
   };
 
-  const handleCheckboxChange = (school_id) => {
-    return;
-    setSchools((prev) => {
+  const handleCheckboxChange = (contest_id) => {
+    setContests((prev) => {
       return prev.map((item) => {
-        if (item.school_id === school_id) {
+        if (item.contest_id === contest_id) {
           return {
             ...item,
             checked: !item.checked,
@@ -161,25 +160,40 @@ export default function ElementsList({ setIsEditing }) {
     });
   };
 
+  useEffect(() => {
+    if (!currentSeason) return;
+    setContests((prev) =>
+      prev.map((item) => {
+        let newItem = { ...item, visible: true };
+        const dateTimestamp = new Date(newItem.date).getTime();
+        newItem.visible =
+          currentSeason.value === false
+            ? true
+            : dateTimestamp >= currentSeason.value[0] &&
+              dateTimestamp <= currentSeason.value[1];
+
+        return newItem;
+      }),
+    );
+  }, [currentSeason]);
+
   const { isEveryHidden, isEmpty, isEveryChecked, isAnyChecked } =
     getVisiblityInfo(contests);
 
   return (
     <div className={styles.container}>
       <div className={styles.searchNav}>
-        <SelectWithHeading heading={''}>
+        <SelectWithHeading heading={'Sezon'}>
           <Select
-            placeholder={'Sezon'}
+            placeholder={seasons?.length > 0 ? 'Wybierz sezon' : 'Brak wyników'}
             width={200}
             height={50}
-            options={[
-              { value: null, label: '2022/23' },
-              { value: 1, label: '2021/22' },
-              { value: 0, label: '2020/21' },
-            ]}
+            options={
+              seasons && [{ label: 'Wszystkie', value: false }, ...seasons]
+            }
             isSearchable={false}
-            // value={currentGender}
-            // onChange={setCurrentGender}
+            value={currentSeason}
+            onChange={setCurrentSeason}
           />
         </SelectWithHeading>
       </div>
@@ -205,7 +219,25 @@ export default function ElementsList({ setIsEditing }) {
             iconPosition={'right'}
             text={'Data'}
             action={() => {
-              setFiltering(!elementsState.filters.date);
+              setFiltering(!elementsState.filters.date, null);
+            }}
+            disabled={isEmpty || isEveryHidden}
+          />
+        </li>
+        <li
+          className={cx(styles['nav--element'], {
+            [styles['desc-dropdown']]: !elementsState.filters.location,
+            [styles['asc-dropdown']]: elementsState.filters.location,
+          })}
+        >
+          <DefaultButton
+            style={'text'}
+            size={'small'}
+            icon={<DropDownIcon />}
+            iconPosition={'right'}
+            text={'Runda'}
+            action={() => {
+              setFiltering(null, !elementsState.filters.location);
             }}
             disabled={isEmpty || isEveryHidden}
           />
@@ -271,15 +303,31 @@ const ContestComponent = ({
   setIsEditing,
   setElementsState,
 }) => {
+  const navigate = useNavigate();
   const buttonRef = useRef(null);
+  const dateSplitted = date.split('-');
   return (
     <>
       <Checkbox
         checked={checked}
         onChange={() => handleCheckboxChange(contest_id)}
       />
-      <span>{date}</span>
+      <span>
+        {`${Number(dateSplitted[2])} 
+        ${getMonthName(Number(dateSplitted[1]) - 1)} 
+        ${dateSplitted[0]}`}
+      </span>
       <span>{schools.find((i) => i.school_id === location).name}</span>
+      <DefaultButton
+        customSize={{
+          height: '35px',
+          width: '120px',
+          fontSize: '1em',
+        }}
+        text={'Zarządzaj'}
+        action={() => navigate(`/admin/contests/managment/teams/${contest_id}`)}
+      />
+
       <ContextMenu
         options={[
           {
@@ -287,6 +335,27 @@ const ContestComponent = ({
             text: 'Edytuj',
             action: () => {
               setIsEditing(contest_id);
+            },
+          },
+          {
+            icon: <GroupIcon />,
+            text: 'Drużyny',
+            action: () => {
+              navigate(`/admin/contests/managment/teams/${contest_id}`);
+            },
+          },
+          {
+            icon: <ResultIcon />,
+            text: 'Wyniki',
+            action: () => {
+              navigate(`/admin/contests/managment/results/${contest_id}`);
+            },
+          },
+          {
+            icon: <ThrophyIcon />,
+            text: 'Podium',
+            action: () => {
+              navigate(`/admin/contests/managment/podium/${contest_id}`);
             },
           },
           {
@@ -323,28 +392,35 @@ function ConfirmDelete({
   setElementsState,
   handleDelete,
 }) {
+  const getDescription = (location, date) => {
+    const [year, month, day] = date.split('-');
+    const schoolName = schools.find((i) => i.school_id === location).name;
+    return `${Number(day)} ${getMonthName(
+      Number(month) - 1,
+    )} ${year} - ${schoolName}`;
+  };
+  const getDescriptionFromDeleteId = () => {
+    const { location, date } = contests.find(
+      (i) => i.contest_id === elementsState.toDeleteId,
+    );
+
+    return getDescription(location, date);
+  };
   return (
     <ConfirmModal
       content={
         <ul className={styles.confirmList}>
           {elementsState.toDeleteId !== undefined ? (
-            <li>
-              {
-                contests.find((i) => i.contest_id === elementsState.toDeleteId)
-                  .date
-              }
-              {schools.find((i) => i.school_id === location).name}
-            </li>
+            <li>{getDescriptionFromDeleteId()}</li>
           ) : (
-            contests.map(
-              ({ contest_id, checked, visible, location }) =>
+            contests.map(({ contest_id, date, checked, visible, location }) => {
+              return (
                 checked &&
                 visible && (
-                  <li key={contest_id}>
-                    {date} {schools.find((i) => i.school_id === location).name}
-                  </li>
-                ),
-            )
+                  <li key={contest_id}>{getDescription(location, date)}</li>
+                )
+              );
+            })
           )}
         </ul>
       }

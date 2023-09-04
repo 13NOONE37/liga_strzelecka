@@ -1,0 +1,153 @@
+.table {
+  border: 2px solid #39394b;
+  border-radius: 10px;
+  color: #fff;
+  grid-area: table;
+  align-self: start;
+}
+.empty {
+  display: grid;
+  place-items: center;
+  color: #9c9ca5;
+  grid-area: table;
+}
+.table--nav {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  border-bottom: 2px solid #39394b;
+  background-color: hsl(244, 20%, 22%);
+  border-radius: 10px 10px 0 0;
+}
+
+.table--nav span {
+  text-align: center;
+  border-right: 2px solid #39394b;
+  padding: 12px;
+}
+.table--nav span:first-child {
+  text-align: start;
+}
+.table--nav span:last-child {
+  border-right: unset;
+}
+
+.table--results {
+  max-height: 308px;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+}
+.table--results::-webkit-scrollbar {
+  border-radius: 0 0 10px 0;
+}
+.table--results::-webkit-scrollbar-thumb {
+  border-radius: 0 0 10px 0;
+}
+.table--row {
+  display: grid;
+  grid-template-columns: 250px repeat(10, 50px);
+  grid-template-rows: 50px;
+  border-bottom: 2px solid #39394b;
+}
+.table--row:last-child {
+  border-bottom: unset;
+}
+.table--row--element {
+  display: grid;
+  place-items: center;
+  border-right: 2px solid #39394b;
+
+  transition: all 0.15s ease-out;
+  scroll-snap-align: start;
+}
+.table--row--element:first-child {
+  place-items: center start;
+  padding: 12px;
+}
+.table--row--element:last-child {
+  border-right: unset;
+}
+.selectValue {
+  width: 100%;
+  height: 100%;
+
+  font-size: 16px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  color: #fff;
+  text-align: center;
+
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+.selectValue:hover {
+  background-color: hsla(240, 14%, 26%, 0.5);
+}
+.selectValue:focus {
+  /* background-color: red; */
+}
+.selectValue__focused {
+  background-color: hsl(244, 20%, 26%) !important;
+}
+.currentFocused input {
+  /* background-color: red !important; */
+  /* background-color: hsl(244, 20%, 26%); */
+}
+.selectValue::-webkit-outer-spin-button,
+.selectValue::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.selectValue[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.valueSelect {
+  grid-area: valueSelect;
+  align-self: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  grid-gap: 4px;
+  width: 210px;
+  height: 280px;
+}
+@media (max-width: 1271px) {
+  .valueSelect {
+    align-self: center;
+    justify-self: center;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 280px;
+    height: 210px;
+  }
+}
+.valueSelect button {
+  cursor: pointer;
+  border: 3px solid transparent;
+  outline: none;
+  background-color: transparent;
+
+  color: #fff;
+  font-family: DM Sans;
+  font-size: 16px;
+  font-weight: 400;
+  background-color: #39394b;
+  transition: all 0.15s ease-in;
+  border-radius: 10px;
+}
+.valueSelect button:active {
+  background-color: #302aff;
+}
+.valueSelect button:hover {
+  background-color: #4742fd;
+}
+.valueSelect button:focus {
+  border-color: #302aff;
+}
+.disabledButton {
+  cursor: default;
+  background-color: #39394b !important;
+  border-color: transparent !important;
+}

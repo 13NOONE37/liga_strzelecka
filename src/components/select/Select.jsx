@@ -18,6 +18,9 @@ const Select = ({
   focusOnMount,
   setIsFocused,
   setTouched,
+  isMulti,
+  limitOfOptions,
+  isDisabled,
 }) => {
   const selectRef = useRef(null);
 
@@ -44,16 +47,59 @@ const Select = ({
         isSearchable={isSearchable}
         noOptionsMessage={() => 'Brak wyników'}
         classNamePrefix={'box--select'}
+        isMulti={isMulti}
+        isDisabled={isDisabled}
+        isOptionDisabled={() => value?.length >= limitOfOptions}
         styles={{
+          multiValue: (base, state) => {
+            return {
+              ...base,
+              display: state.isDisabled ? 'none' : 'inherit',
+              backgroundColor: '#39394b',
+              color: state.isDisabled ? '#605cff' : '#fff',
+            };
+          },
+          indicatorSeparator: (base, state) => {
+            return {
+              ...base,
+              background: state.isDisabled ? '#39394b' : 'inherit',
+            };
+          },
+          multiValueRemove: (base, state) => {
+            return {
+              ...base,
+              backgroundColor: '#ff5c5c',
+            };
+          },
+          clearIndicator: (base, state) => {
+            return {
+              ...base,
+              color: '#39394b',
+            };
+          },
+          dropdownIndicator: (base, state) => {
+            return {
+              ...base,
+              color: '#39394b',
+            };
+          },
           control: (base, state) => {
             return {
               ...base,
               transition: 'all .1s ease-in',
-              borderWidth: '1px',
+              borderWidth: state.isDisabled ? '0px' : '1px',
               borderRadius: '10px',
               width: width ?? 'auto',
               height: height ?? 'auto',
+              padding: state.isMulti && '1em',
               paddingLeft: '1em',
+              color: state.isDisabled ? '#605cff ' : 'inherit',
+            };
+          },
+          placeholder: (base, state) => {
+            return {
+              ...base,
+              color: state.isDisabled ? '#605cff ' : 'inherit',
             };
           },
           option: (base, state) => {
@@ -82,7 +128,7 @@ const Select = ({
             // danger: 'orange',
             // dangerLight: 'orange',
             neutral0: `${backgroundColor ?? '#39394b'}`, //background-color
-            // neutral5: 'blue',
+            neutral5: '#33315f',
             // neutral10: 'yellow',
             neutral20: 'transparent', //inactive-border
             neutral30: '#4742fd', //border-hover-color
