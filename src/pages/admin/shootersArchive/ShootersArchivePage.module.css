@@ -1,46 +1,61 @@
 .container {
-  padding: 30px;
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-.returnLink {
-}
-.returnLink svg {
-  transform: scale(-1);
-}
-.nav {
-  display: grid;
-  grid-gap: 2px;
-  grid-template-columns: repeat(3, auto);
+  gap: 40px;
+  padding: 30px;
   background-color: #222131;
-  width: 300px;
-  border-radius: 10px;
+  height: 100%;
 }
-.nav button {
-  cursor: pointer;
-  display: grid;
-  place-items: center;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header h1 {
+  font-weight: 700;
+  font-size: 24px;
 
-  padding: 14px;
-  color: #fff;
-  font-size: 14px;
-  outline: none;
-  border: 2px solid transparent;
-  background-color: #39394b;
-  transition: all 0.15s ease-out;
+  color: #ffffff;
 }
-.nav button:focus {
-  border-color: #4742fd;
+.section {
+  width: 100%;
+  transition: width 0.25s ease-in-out;
+  will-change: width;
 }
-.nav button:first-child {
-  border-radius: 10px 0 0 10px;
+
+@media (min-width: 1480px) {
+  .section__active {
+    width: calc(100% - 480px);
+  }
 }
-.nav button:last-child {
-  border-radius: 0 10px 10px 0;
+.modalContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto 1fr auto;
+  grid-template-areas: 'first second' 'gender gender' 'school school' '_ __' 'add add';
+  grid-gap: 1em;
+  place-items: center;
+  height: 100%;
 }
-.activeLink {
-  background-color: #605cff !important;
+.modalContent button {
+  width: 100%;
+  grid-area: add;
+}
+.modalContent--field {
+  width: 100%;
+}
+.modalContent--field__firstName {
+  grid-area: first;
+}
+.modalContent--field__secondName {
+  grid-area: second;
+}
+.modalContent--field__gender {
+  grid-area: gender;
+}
+.modalContent--field__school {
+  grid-area: school;
 }
 
 .loadingContainer {

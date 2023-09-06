@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import FocusTrap from 'focus-trap-react';
 import styles from './Modal.module.css';
 import { useDetectOutsideClick } from '../../hooks/useDetectOutsideClick';
+import useShortcuts from '../../utils/useShortcuts';
 
 export default function Modal({ children, handleClose }) {
   const containerRef = useRef(null);
@@ -16,6 +17,14 @@ export default function Modal({ children, handleClose }) {
   };
 
   useDetectOutsideClick(boxRef, handlePreClose);
+  useShortcuts([
+    {
+      key: 'Escape',
+      handler: () => {
+        handlePreClose();
+      },
+    },
+  ]);
   return (
     <FocusTrap>
       <div className={styles.container} ref={containerRef}>

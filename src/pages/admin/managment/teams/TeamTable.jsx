@@ -66,15 +66,15 @@ function TeamTable({
           <div className={styles['table--row']}>
             {teamContesters.map((contester) => {
               const shooter = shooters.find(
-                (shooter) => shooter.shooter_id === contester.shooter_id,
+                (shooter) => shooter.shooter_id === contester?.shooter_id,
               );
 
               return (
                 <span
                   className={cx(styles['table--row--element'])}
-                  key={`${contester.shooter_id}_${contester.team_id}`}
+                  key={`${contester?.shooter_id}_${contester?.team_id}`}
                 >
-                  {shooter.firstName} {shooter.secondName}
+                  {shooter?.firstName} {shooter?.secondName}
                 </span>
               );
             })}

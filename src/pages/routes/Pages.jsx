@@ -10,6 +10,7 @@ import SchoolsPage from '../admin/schools/SchoolsPage';
 import ShootersPage from '../admin/shooters/ShootersPage';
 import Auth from '../public/Auth/Auth';
 import Main from '../public/Main/Main';
+import ShootersArchivePage from '../admin/shootersArchive/ShootersArchivePage';
 
 const Pages = {
   guestPages: [
@@ -51,13 +52,17 @@ const Pages = {
           element: <ShootersPage />,
         },
         {
+          path: '/archive',
+          element: <ShootersArchivePage />,
+        },
+        {
           path: '/schools',
           element: <SchoolsPage />,
         },
-        {
-          path: '/help',
-          element: <HelpPage />,
-        },
+        // {
+        //   path: '/help',
+        //   element: <HelpPage />,
+        // },
       ],
     },
   ],

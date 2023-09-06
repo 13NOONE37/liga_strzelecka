@@ -14,6 +14,7 @@ import DataContext from '../../../store/DataContext';
 import fetchData from '../../../utils/fetchData';
 import SelectWithHeading from '../../../components/select/SelectWithHeading';
 import Select from '../../../components/select/Select';
+import { toast } from 'react-toastify';
 
 export default function ShootersPage() {
   const { schools, shooters, setShooters } = useContext(DataContext);
@@ -169,6 +170,27 @@ export default function ShootersPage() {
 
     setSubmitting(false);
   };
+  const handleArchiveShooter = async (id) => {
+    try {
+      const { status } = await fetchData({
+        action: 'updateShooter',
+        shooter_id: id,
+        isArchived: 1,
+      });
+      //Only if fetch is success✅
+      if (status === 200) {
+        setShooters((prev) =>
+          prev.filter((shooter) => shooter.shooter_id !== id),
+        );
+      }
+    } catch (error) {
+      toast.error('Coś poszło nie tak. Spróbuj ponownie.', {
+        autoClose: 4000,
+        closeButton: false,
+        pauseOnHover: false,
+      });
+    }
+  };
 
   useEffect(() => {
     //Reset visibility and checkmark to default
@@ -210,6 +232,7 @@ export default function ShootersPage() {
                 preShowModal: true,
               })
             }
+            handleArchive={handleArchiveShooter}
             currentSchool={shooterState.currentSchool}
             setCurrentSchool={(value) =>
               setShooterState({ currentSchool: value })

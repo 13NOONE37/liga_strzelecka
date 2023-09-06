@@ -7,6 +7,7 @@ import { ReactComponent as Face } from '../../assets/icons/face.svg';
 import { ReactComponent as Timeline } from '../../assets/icons/timeline.svg';
 import { ReactComponent as Logout } from '../../assets/icons/logout.svg';
 import { ReactComponent as Help } from '../../assets/icons/help.svg';
+import { ReactComponent as LocationAway } from '../../assets/icons/location_away.svg';
 import DefaultButton, { IconButton } from '../button/Button';
 import { NavLink, useLocation } from 'react-router-dom';
 import useLogout from '../../utils/endpoints/useLogout';
@@ -32,15 +33,20 @@ export default function AdminSidebar() {
       icon: <Face />,
     },
     {
+      path: '/admin/archive',
+      name: 'Archiwum strzelców',
+      icon: <LocationAway />,
+    },
+    {
       path: '/admin/schools',
       name: 'Szkoły',
       icon: <School />,
     },
-    {
-      path: '/admin/help',
-      name: 'Pomoc',
-      icon: <Help />,
-    },
+    // {
+    //   path: '/admin/help',
+    //   name: 'Pomoc',
+    //   icon: <Help />,
+    // },
   ];
 
   const HEIGHT = 62; //it's height of one li element, we need this to move indicator

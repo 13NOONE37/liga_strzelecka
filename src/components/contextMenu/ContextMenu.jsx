@@ -62,14 +62,6 @@ const ContextMenu = forwardRef(({ options, children }, ref) => {
       //RIGHT CENTER
       setPosition('right');
       // console.log('3');
-    } else if (
-      width / 2 <= OFFSET_RIGHT &&
-      width / 2 <= OFFSET_LEFT &&
-      height + TRIANGLE_SIZE <= OFFSET_TOP
-    ) {
-      //TOP CENTER
-      setPosition('top');
-      // console.log('4');
     } else {
       //NOT Displaying at all because screen is too small
       setPosition('hide');

@@ -82,20 +82,21 @@ export default function ElementsList({ setIsEditing }) {
   };
   const handleDelete = (id) => {
     const idsToDeleteList = [];
-    let idsToFilterList = [];
+    const idsList = [];
+    const idsToFilterList = [];
 
     if (id) {
       idsToDeleteList.push(
         fetchData({ action: 'deleteSchool', school_id: id }),
       );
-      idsToFilterList.push(id);
+      idsList.push(id);
     } else {
       schools.forEach((item) => {
         if (item.checked && item.visible) {
           idsToDeleteList.push(
             fetchData({ action: 'deleteSchool', school_id: item.school_id }),
           );
-          idsToFilterList.push(item.school_id);
+          idsList.push(item.school_id);
         }
       });
     }
@@ -107,8 +108,7 @@ export default function ElementsList({ setIsEditing }) {
             if (result.reason.response.status === 409) {
               toast.error(
                 `Nie można usunąć szkoły "${
-                  schools.find((v) => v.school_id === idsToFilterList[index])
-                    .name
+                  schools.find((v) => v.school_id === idsList[index]).name
                 }" ponieważ wciąż są do niej przypisani strzelcy.`,
                 {
                   autoClose: 5000,
@@ -119,9 +119,8 @@ export default function ElementsList({ setIsEditing }) {
                 autoClose: 5000,
               });
             }
-            idsToFilterList = idsToFilterList.filter(
-              (_, index2) => index !== index2,
-            );
+          } else if (result.status === 'fulfilled') {
+            idsToFilterList.push(idsList[index]);
           }
         });
 

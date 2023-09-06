@@ -159,6 +159,9 @@ export default function ContestsPage() {
     setSubmitting(false);
   };
   const getAndApplySeasons = (contests) => {
+    if (contests.length === 0) {
+      return setContestsState({ seasons: null });
+    }
     const years = [];
     const ranges = [];
 

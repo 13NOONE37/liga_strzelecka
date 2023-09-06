@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 const useShortcuts = (data) => {
   if (!Array.isArray(data)) {

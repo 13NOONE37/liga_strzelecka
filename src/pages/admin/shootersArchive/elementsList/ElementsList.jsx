@@ -14,7 +14,6 @@ import shootersStyles from './ElementsList.module.css';
 import { ReactComponent as MoreIcon } from '../../../../assets/icons/more.svg';
 import { ReactComponent as DeleteIcon } from '../../../../assets/icons/delete.svg';
 import { ReactComponent as EditIcon } from '../../../../assets/icons/edit.svg';
-import { ReactComponent as LocationAwayIcon } from '../../../../assets/icons/location_away.svg';
 import { ReactComponent as DropDownIcon } from '../../../../assets/icons/arrow_drop_down.svg';
 
 import Checkbox from '../../../../components/checkbox/Checkbox';
@@ -23,7 +22,6 @@ import DefaultButton, {
 } from '../../../../components/button/Button';
 import filterArrayOfObjects from '../../../../utils/filterArrayOfObjects';
 import ConfirmModal from '../../../../components/modal/RTUComponents/ConfirmModal/ConfirmModal';
-import ContextMenu from '../../../../components/contextMenu/ContextMenu';
 import fetchData from '../../../../utils/fetchData';
 import { toast } from 'react-toastify';
 import SearchInput from '../../../../components/input/RTUComponents/SearchInput';
@@ -31,17 +29,14 @@ import Select from '../../../../components/select/Select';
 import DataContext from '../../../../store/DataContext';
 import SelectWithHeading from '../../../../components/select/SelectWithHeading';
 import getVisiblityInfo from '../../../../utils/getVisiblityInfo';
+import ContextMenu from '../../../../components/contextMenu/ContextMenu';
 
 export default function ElementsList({
-  setIsEditing,
-  currentSchool,
-  setCurrentSchool,
-  currentGender,
-  setCurrentGender,
-  handleArchive,
+  archivedShooters,
+  setArchivedShooters,
+  handleUpdate,
 }) {
-  const { schools, shooters, setShooters } = useContext(DataContext);
-
+  const { schools } = useContext(DataContext);
   const [elementsState, setElementsState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
@@ -54,6 +49,8 @@ export default function ElementsList({
       toDeleteId: undefined,
       tempSearchPhrase: '',
       searchPhrase: '',
+      currentSchool: null,
+      currentGender: null,
     },
   );
   const setFiltering = (firstNameState, secondNameState, school_idState) => {
@@ -66,7 +63,7 @@ export default function ElementsList({
     });
   };
   const handleCheckAll = () => {
-    setShooters((prev) =>
+    setArchivedShooters((prev) =>
       prev.map((item) => {
         return {
           ...item,
@@ -76,7 +73,7 @@ export default function ElementsList({
     );
   };
   const handleCheckboxChange = (shooter_id) => {
-    setShooters((prev) => {
+    setArchivedShooters((prev) => {
       return prev.map((item) => {
         if (item.shooter_id === shooter_id) {
           return {
@@ -88,8 +85,8 @@ export default function ElementsList({
       });
     });
   };
-  const handleSort = (shooters) => {
-    // filterArrayOfObjects(shooters, 'index', 'asc');
+  const handleSort = (archivedShooters) => {
+    // filterArrayOfObjects(archivedShooters, 'index', 'asc');
 
     let currentFilter;
     for (const filter of Object.entries(elementsState.filters)) {
@@ -101,13 +98,13 @@ export default function ElementsList({
 
     if (currentFilter) {
       return filterArrayOfObjects(
-        shooters,
+        archivedShooters,
         currentFilter[0],
         currentFilter[1] ? 'desc' : 'asc',
       );
     }
 
-    return shooters;
+    return archivedShooters;
   };
   const handleDelete = (id) => {
     const idsToDeleteList = [];
@@ -118,9 +115,9 @@ export default function ElementsList({
       idsToDeleteList.push(
         fetchData({ action: 'deleteShooter', shooter_id: id }),
       );
-      iidsList.push(id);
+      idsList.push(id);
     } else {
-      shooters.forEach((item) => {
+      archivedShooters.forEach((item) => {
         if (item.checked && item.visible) {
           idsToDeleteList.push(
             fetchData({ action: 'deleteShooter', shooter_id: item.shooter_id }),
@@ -151,7 +148,7 @@ export default function ElementsList({
           }
         });
 
-        setShooters((prev) =>
+        setArchivedShooters((prev) =>
           prev
             .filter((item) => !idsToFilterList.includes(item.shooter_id))
             .map((item) => {
@@ -164,40 +161,46 @@ export default function ElementsList({
           toDeleteId: undefined,
         });
       })
-      .catch((error) => {
+      .catch((error) =>
         toast.error(`Coś poszło nie tak. Spróbuj ponownie."`, {
           autoClose: 5000,
-        });
-      });
+        }),
+      );
   };
 
   useEffect(() => {
     const phrase = elementsState.searchPhrase.trim().replace(/\//g, '\\/');
     const regex = new RegExp(phrase, 'i');
 
-    setShooters((prev) =>
+    setArchivedShooters((prev) =>
       prev.map((item) => {
         let newItem = { ...item, visible: true };
         newItem.visible =
           regex.test(item.firstName) || regex.test(item.secondName);
 
-        if (currentSchool?.value) {
+        if (elementsState.currentSchool?.value) {
           newItem.visible =
-            newItem.visible && item.school_id === currentSchool.value;
+            newItem.visible &&
+            item.school_id === elementsState.currentSchool.value;
         }
-        if (typeof currentGender?.value === 'number') {
+        if (typeof elementsState.currentGender?.value === 'number') {
           newItem.visible =
-            newItem.visible && item.isMan === currentGender.value;
+            newItem.visible && item.isMan === elementsState.currentGender.value;
         }
 
         return newItem;
       }),
     );
-  }, [elementsState.searchPhrase, currentSchool, currentGender]);
+  }, [
+    elementsState.searchPhrase,
+    elementsState.currentSchool,
+    elementsState.currentGender,
+  ]);
 
   const { isEveryHidden, isEmpty, isEveryChecked, isAnyChecked } =
-    getVisiblityInfo(shooters);
+    getVisiblityInfo(archivedShooters);
 
+  const buttonRef = useRef(null);
   return (
     <div className={styles.container}>
       <div className={shootersStyles.searchNav}>
@@ -215,8 +218,8 @@ export default function ElementsList({
                 })),
               ]}
               isSearchable={true}
-              value={currentSchool}
-              onChange={setCurrentSchool}
+              value={elementsState.currentSchool}
+              onChange={(value) => setElementsState({ currentSchool: value })}
             />
           </SelectWithHeading>
         </div>
@@ -232,8 +235,8 @@ export default function ElementsList({
                 { value: 0, label: 'Kobieta' },
               ]}
               isSearchable={true}
-              value={currentGender}
-              onChange={setCurrentGender}
+              value={elementsState.currentGender}
+              onChange={(value) => setElementsState({ currentGender: value })}
             />
           </SelectWithHeading>
         </div>
@@ -330,7 +333,7 @@ export default function ElementsList({
         duration={300}
         delay={50}
       >
-        {handleSort(shooters).map((props) => {
+        {handleSort(archivedShooters).map((props) => {
           return (
             props.visible && (
               <div
@@ -341,9 +344,7 @@ export default function ElementsList({
                   {...props}
                   schools={schools}
                   handleCheckboxChange={handleCheckboxChange}
-                  setIsEditing={setIsEditing}
-                  setElementsState={setElementsState}
-                  handleArchive={handleArchive}
+                  handleUpdate={handleUpdate}
                 />
               </div>
             )
@@ -353,7 +354,7 @@ export default function ElementsList({
 
       {elementsState.showDeleteModal && (
         <ConfirmDelete
-          shooters={shooters}
+          archivedShooters={archivedShooters}
           elementsState={elementsState}
           setElementsState={setElementsState}
           handleDelete={handleDelete}
@@ -371,12 +372,8 @@ const ShooterComponent = ({
   checked,
   schools,
   handleCheckboxChange,
-
-  setIsEditing,
-  setElementsState,
-  handleArchive,
+  handleUpdate,
 }) => {
-  const buttonRef = useRef(null);
   const schoolName = schools.find(
     (school) => school.school_id === school_id,
   ).name;
@@ -389,51 +386,21 @@ const ShooterComponent = ({
       <span>{firstName}</span>
       <span>{secondName}</span>
       <span>{schoolName}</span>
-      <ContextMenu
-        options={[
-          {
-            icon: <EditIcon />,
-            text: 'Edytuj',
-            action: () => {
-              setIsEditing(shooter_id);
-            },
-          },
-          {
-            icon: <LocationAwayIcon />,
-            text: 'Archwizuj',
-            action: () => {
-              handleArchive(shooter_id);
-            },
-          },
-          {
-            icon: <DeleteIcon />,
-            text: 'Usuń',
-            action: () => {
-              setElementsState({
-                showDeleteModal: true,
-                toDeleteId: shooter_id,
-              });
-            },
-          },
-        ]}
-        ref={buttonRef}
-      >
-        {(setActive) => (
-          <button
-            className={styles['element--more']}
-            onClick={setActive}
-            ref={buttonRef}
-          >
-            <MoreIcon />
-          </button>
-        )}
-      </ContextMenu>
+      <DefaultButton
+        customSize={{
+          height: '35px',
+          width: '120px',
+          fontSize: '1em',
+        }}
+        text={'Przywróć'}
+        action={() => handleUpdate(shooter_id)}
+      />
     </>
   );
 };
 
 function ConfirmDelete({
-  shooters,
+  archivedShooters,
   elementsState,
   setElementsState,
   handleDelete,
@@ -441,7 +408,9 @@ function ConfirmDelete({
   const [isLoading, setIsLoading] = useState(false);
   const currentUser =
     elementsState.toDeleteId &&
-    shooters.find((shooter) => shooter.shooter_id === elementsState.toDeleteId);
+    archivedShooters.find(
+      (shooter) => shooter.shooter_id === elementsState.toDeleteId,
+    );
   return (
     <ConfirmModal
       content={
@@ -451,7 +420,7 @@ function ConfirmDelete({
               {currentUser.firstName} {currentUser.secondName}
             </li>
           ) : (
-            shooters.map(
+            archivedShooters.map(
               ({ shooter_id, checked, visible, firstName, secondName }) =>
                 checked &&
                 visible && (
