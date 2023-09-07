@@ -94,20 +94,23 @@ export default function ElementsList({
   };
   const handleDelete = (id) => {
     const idsToDeleteList = [];
-    let idsToFilterList = [];
+    const idsList = [];
+    const idsToFilterList = [];
 
     if (id) {
       idsToDeleteList.push(
-        fetchData({ action: 'deleteContest', contest_id: id }),
+        fetchData({ action: 'deleteTeam', contest_id }).then(() => {
+          fetchData({ action: 'deleteContest', contest_id: id });
+        }),
       );
-      idsToFilterList.push(id);
+      idsList.push(id);
     } else {
       contests.forEach((item) => {
         if (item.checked && item.visible) {
           idsToDeleteList.push(
             fetchData({ action: 'deleteContest', contest_id: item.contest_id }),
           );
-          idsToFilterList.push(item.contest_id);
+          idsList.push(item.contest_id);
         }
       });
     }
@@ -119,10 +122,8 @@ export default function ElementsList({
             toast.error(`Coś poszło nie tak. Spróbuj ponownie."`, {
               autoClose: 5000,
             });
-
-            idsToFilterList = idsToFilterList.filter(
-              (_, index2) => index !== index2,
-            );
+          } else if (result.status === 'fulfilled') {
+            idsToFilterList.push(idsList[index]);
           }
         });
 
@@ -317,7 +318,7 @@ const ContestComponent = ({
         ${getMonthName(Number(dateSplitted[1]) - 1)} 
         ${dateSplitted[0]}`}
       </span>
-      <span>{schools.find((i) => i.school_id === location).name}</span>
+      <span>{schools.find((i) => i.school_id === location)?.name}</span>
       <DefaultButton
         customSize={{
           height: '35px',

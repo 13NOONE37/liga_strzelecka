@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 07, 2023 at 07:06 AM
+-- Generation Time: Jul 21, 2023 at 07:14 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -38,8 +38,7 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`admin_id`, `login`, `password`) VALUES
-('1', 'login', '$2a$12$mPgy.0ovnvKedIDtUcYwQeyCCr5M0uQmMho2IQ59a/rjPXeel/WXS'),
-('a2b8cbbe-2bae-11ee-b16d-001a7dda7113', 'admin', '$2a$12$mPgy.0ovnvKedIDtUcYwQeyCCr5M0uQmMho2IQ59a/rjPXeel/WXS');
+(1, 'login', '$2a$12$mPgy.0ovnvKedIDtUcYwQeyCCr5M0uQmMho2IQ59a/rjPXeel/WXS');
 
 -- --------------------------------------------------------
 
@@ -51,16 +50,16 @@ CREATE TABLE `contesters` (
   `team_id` char(36) NOT NULL,
   `shooter_id` char(36) NOT NULL,
   `isInTeam` tinyint(1) NOT NULL,
-  `shoot_1` int(11) DEFAULT NULL,
-  `shoot_2` int(11) DEFAULT NULL,
-  `shoot_3` int(11) DEFAULT NULL,
-  `shoot_4` int(11) DEFAULT NULL,
-  `shoot_5` int(11) DEFAULT NULL,
-  `shoot_6` int(11) DEFAULT NULL,
-  `shoot_7` int(11) DEFAULT NULL,
-  `shoot_8` int(11) DEFAULT NULL,
-  `shoot_9` int(11) DEFAULT NULL,
-  `shoot_10` int(11) DEFAULT NULL
+  `shoot_1` int(11) NOT NULL,
+  `shoot_2` int(11) NOT NULL,
+  `shoot_3` int(11) NOT NULL,
+  `shoot_4` int(11) NOT NULL,
+  `shoot_5` int(11) NOT NULL,
+  `shoot_6` int(11) NOT NULL,
+  `shoot_7` int(11) NOT NULL,
+  `shoot_8` int(11) NOT NULL,
+  `shoot_9` int(11) NOT NULL,
+  `shoot_10` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- --------------------------------------------------------
@@ -72,16 +71,12 @@ CREATE TABLE `contesters` (
 CREATE TABLE `contests` (
   `contest_id` char(36) NOT NULL,
   `date` date NOT NULL,
-  `location` char(36) NOT NULL,
-  `man_first_place_shooter_id` char(36) DEFAULT NULL,
-  `man_second_place_shooter_id` char(36) DEFAULT NULL,
-  `man_third_place_shooter_id` char(36) DEFAULT NULL,
-  `woman_first_place_shooter_id` char(36) DEFAULT NULL,
-  `woman_second_place_shooter_id` char(36) DEFAULT NULL,
-  `woman_third_place_shooter_id` char(36) DEFAULT NULL,
-  `first_place_team_id` char(36) DEFAULT NULL,
-  `second_place_team_id` char(36) DEFAULT NULL,
-  `third_place_team_id` char(36) DEFAULT NULL
+  `man_first_place_shooter_id` char(36) NOT NULL,
+  `man_second_place_shooter_id` char(36) NOT NULL,
+  `man_third_place_shooter_id` char(36) NOT NULL,
+  `woman_first_place_shooter_id` char(36) NOT NULL,
+  `woman_second_place_shooter_id` char(36) NOT NULL,
+  `woman_third_place_shooter_id` char(36) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- --------------------------------------------------------
@@ -106,8 +101,7 @@ CREATE TABLE `shooters` (
   `school_id` char(36) NOT NULL,
   `firstName` varchar(32) NOT NULL,
   `secondName` varchar(32) NOT NULL,
-  `isMan` tinyint(1) NOT NULL,
-  `isArchived` tinyint(1) DEFAULT NULL
+  `isMan` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- --------------------------------------------------------
@@ -150,18 +144,13 @@ ALTER TABLE `contests`
   ADD KEY `third_place_shooter_id` (`man_third_place_shooter_id`),
   ADD KEY `woman_first_place_shooter_id` (`woman_first_place_shooter_id`),
   ADD KEY `woman_second_place_shooter_id` (`woman_second_place_shooter_id`),
-  ADD KEY `woman_third_place_shooter_id` (`woman_third_place_shooter_id`),
-  ADD KEY `location` (`location`),
-  ADD KEY `contests_ibfk_7` (`first_place_team_id`),
-  ADD KEY `contests_ibfk_8` (`second_place_team_id`),
-  ADD KEY `contests_ibfk_9` (`third_place_team_id`);
+  ADD KEY `woman_third_place_shooter_id` (`woman_third_place_shooter_id`);
 
 --
 -- Indexes for table `schools`
 --
 ALTER TABLE `schools`
-  ADD PRIMARY KEY (`school_id`),
-  ADD UNIQUE KEY `name` (`name`);
+  ADD PRIMARY KEY (`school_id`);
 
 --
 -- Indexes for table `shooters`
@@ -194,15 +183,11 @@ ALTER TABLE `contesters`
 --
 ALTER TABLE `contests`
   ADD CONSTRAINT `contests_ibfk_1` FOREIGN KEY (`man_first_place_shooter_id`) REFERENCES `shooters` (`shooter_id`),
-  ADD CONSTRAINT `contests_ibfk_10` FOREIGN KEY (`location`) REFERENCES `schools` (`school_id`),
   ADD CONSTRAINT `contests_ibfk_2` FOREIGN KEY (`man_second_place_shooter_id`) REFERENCES `shooters` (`shooter_id`),
   ADD CONSTRAINT `contests_ibfk_3` FOREIGN KEY (`man_third_place_shooter_id`) REFERENCES `shooters` (`shooter_id`),
   ADD CONSTRAINT `contests_ibfk_4` FOREIGN KEY (`woman_first_place_shooter_id`) REFERENCES `shooters` (`shooter_id`),
   ADD CONSTRAINT `contests_ibfk_5` FOREIGN KEY (`woman_second_place_shooter_id`) REFERENCES `shooters` (`shooter_id`),
-  ADD CONSTRAINT `contests_ibfk_6` FOREIGN KEY (`woman_third_place_shooter_id`) REFERENCES `shooters` (`shooter_id`),
-  ADD CONSTRAINT `contests_ibfk_7` FOREIGN KEY (`first_place_team_id`) REFERENCES `schools` (`school_id`),
-  ADD CONSTRAINT `contests_ibfk_8` FOREIGN KEY (`second_place_team_id`) REFERENCES `schools` (`school_id`),
-  ADD CONSTRAINT `contests_ibfk_9` FOREIGN KEY (`third_place_team_id`) REFERENCES `schools` (`school_id`);
+  ADD CONSTRAINT `contests_ibfk_6` FOREIGN KEY (`woman_third_place_shooter_id`) REFERENCES `shooters` (`shooter_id`);
 
 --
 -- Constraints for table `shooters`

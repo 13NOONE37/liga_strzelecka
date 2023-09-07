@@ -12,6 +12,7 @@ require('endpoints/schools/createSchool.php');
 require('endpoints/schools/updateSchool.php');
 require('endpoints/schools/deleteSchool.php');
 require('endpoints/shooters/getShooters.php');
+require('endpoints/shooters/getArchivedShooters.php');
 require('endpoints/shooters/createShooter.php');
 require('endpoints/shooters/updateShooter.php');
 require('endpoints/shooters/deleteShooter.php');
@@ -77,6 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             case 'getShooters':
                 getShooters($conn);
+                break;
+            case 'getArchivedShooters':
+                getArchivedShooters($conn);
                 break;
             case 'createShooter':
                 createShooter($conn);

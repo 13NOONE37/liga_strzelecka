@@ -28,6 +28,11 @@ function updateShooter($conn)
                 $params[] = $_POST['isMan'];
                 $paramTypes .= 'i';
             }
+            if (isset($_POST['isArchived'])) {
+                $fieldsToUpdate[] = 'isArchived = ?';
+                $params[] = $_POST['isArchived'];
+                $paramTypes .= 'i';
+            }
 
             if (count($fieldsToUpdate) > 0) {
                 $query = "UPDATE shooters SET " . implode(', ', $fieldsToUpdate) . " WHERE shooter_id=?";

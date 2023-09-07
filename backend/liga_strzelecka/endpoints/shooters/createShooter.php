@@ -10,7 +10,7 @@ function createShooter($conn)
             $isMan = $_POST['isMan'];
 
             try {
-                $query = "INSERT INTO shooters (shooter_id, school_id, firstName, secondName, isMan) VALUES(?, ?, ?, ?, ?)";
+                $query = "INSERT INTO shooters (shooter_id, school_id, firstName, secondName, isMan, isArchived) VALUES(?, ?, ?, ?, ?, NULL)";
                 $stmt = mysqli_prepare($conn, $query);
                 $stmt->bind_param('ssssi', $shooter_id, $school_id, $firstName, $secondName, $isMan);
                 $stmt->execute();

@@ -5,16 +5,28 @@ function deleteShooter($conn)
         if (isset($_POST['shooter_id'])) {
             $shooter_id = $_POST['shooter_id'];
 
-            $query = "DELETE FROM shooters WHERE shooter_id=?";
-            $stmt = mysqli_prepare($conn, $query);
-            $stmt->bind_param('s', $shooter_id);
-            $stmt->execute();
-
-            if ($stmt->affected_rows > 0) {
-                handleResponse(200, 'Usunięto pomyślnie');
+            // Check if the user exists in the contesters table
+            $queryCheckUser = "SELECT COUNT(*) FROM contesters WHERE shooter_id=?";
+            $stmtCheckUser = mysqli_prepare($conn, $queryCheckUser);
+            $stmtCheckUser->bind_param('s', $shooter_id);
+            $stmtCheckUser->execute();
+            $stmtCheckUser->bind_result($userCount);
+            $stmtCheckUser->fetch();
+            $stmtCheckUser->close();
+            
+            if ($userCount > 0) {
+                handleResponse(405, 'Nie można usunąć użytkownika ponieważ jest przypisany do zawodów.');
             } else {
-                handleResponse(404, 'Usuwanie nie powiodło się.');
+                $query = "DELETE FROM shooters WHERE shooter_id=?";
+                $stmt = mysqli_prepare($conn, $query);
+                $stmt->bind_param('s', $shooter_id);
+                $stmt->execute();
+
+                handleResponse(200, 'Usunięto pomyślnie');
+
             }
+
+
         } else {
             handleResponse(400, 'Żądanie jest niekompletne');
         }

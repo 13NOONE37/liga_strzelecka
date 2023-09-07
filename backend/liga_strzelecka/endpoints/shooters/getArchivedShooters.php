@@ -1,8 +1,8 @@
 <?php
-function getShooters($conn)
+function getArchivedShooters($conn)
 {
     if (isAuth()) {
-        $stmt = $conn->prepare("SELECT * FROM shooters WHERE isArchived IS NULL OR isArchived = 0");
+        $stmt = $conn->prepare("SELECT * FROM shooters WHERE isArchived = 1");
         $stmt->execute();
         $result = $stmt->get_result();
 
