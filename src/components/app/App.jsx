@@ -12,6 +12,7 @@ import useSession from '../../utils/endpoints/useSession';
 import axios from 'axios';
 import { ToastContainer } from 'react-toastify';
 import fetchData from '../../utils/fetchData';
+import NotFound from '../../pages/NotFound/NotFound';
 
 function App() {
   axios.defaults.withCredentials = true; //We need to enable it for session support
@@ -51,7 +52,7 @@ function App() {
         />
         <AnimatePresence mode="wait">
           <Routes>
-            <Route path="*" element={<h2>Not found</h2>} />
+            <Route path="*" element={<NotFound />} />
             <Route path="/" element={<GuestRoute />}>
               {Pages.guestPages.map((page1) => {
                 return (
