@@ -147,7 +147,7 @@
   border-color: #302aff;
 }
 .disabledButton {
-  cursor: default;
+  cursor: default !important;
   background-color: #39394b !important;
   border-color: transparent !important;
 }

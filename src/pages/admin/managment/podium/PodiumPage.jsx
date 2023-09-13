@@ -133,7 +133,7 @@ export default function PodiumPage() {
           );
 
           const sumOfPoints = contesters.reduce((sum, contester) => {
-            return contester.team_id === team.team_id
+            return contester.team_id === team.team_id && contester.isInTeam
               ? sum + sumContesterPoints(contester)
               : sum;
           }, 0);
