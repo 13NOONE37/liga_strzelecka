@@ -20,6 +20,7 @@ const Select = ({
   setTouched,
   isMulti,
   limitOfOptions,
+  maxMenuHeight,
   isDisabled,
 }) => {
   const selectRef = useRef(null);
@@ -49,6 +50,7 @@ const Select = ({
         classNamePrefix={'box--select'}
         isMulti={isMulti}
         isDisabled={isDisabled}
+        maxMenuHeight={maxMenuHeight}
         isOptionDisabled={() => value?.length >= limitOfOptions}
         styles={{
           multiValue: (base, state) => {

@@ -1,5 +1,4 @@
 import React, {
-  forwardRef,
   useContext,
   useEffect,
   useReducer,
@@ -118,7 +117,7 @@ export default function ElementsList({
       idsToDeleteList.push(
         fetchData({ action: 'deleteShooter', shooter_id: id }),
       );
-      iidsList.push(id);
+      idsList.push(id);
     } else {
       shooters.forEach((item) => {
         if (item.checked && item.visible) {
@@ -171,6 +170,26 @@ export default function ElementsList({
       });
   };
 
+  const handleSortForVisibility = (shooters) => {
+    const phrase = elementsState.searchPhrase.trim().replace(/\//g, '\\/');
+    const regex = new RegExp(phrase, 'i');
+
+    return shooters.map((item) => {
+      let newItem = { ...item, visible: true };
+      newItem.visible =
+        regex.test(item.firstName) || regex.test(item.secondName);
+
+      if (currentSchool?.value) {
+        newItem.visible =
+          newItem.visible && item.school_id === currentSchool.value;
+      }
+      if (typeof currentGender?.value === 'number') {
+        newItem.visible = newItem.visible && item.isMan === currentGender.value;
+      }
+
+      return newItem;
+    });
+  };
   useEffect(() => {
     const phrase = elementsState.searchPhrase.trim().replace(/\//g, '\\/');
     const regex = new RegExp(phrase, 'i');
@@ -330,12 +349,12 @@ export default function ElementsList({
         duration={300}
         delay={50}
       >
-        {handleSort(shooters).map((props) => {
+        {handleSortForVisibility(handleSort(shooters)).map((props) => {
           return (
             props.visible && (
               <div
                 className={cx(styles.element, shootersStyles.element)}
-                key={props.shooter_id}
+                key={`${props.school_id}_${props.shooter_id}`}
               >
                 <ShooterComponent
                   {...props}

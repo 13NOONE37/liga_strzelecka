@@ -13,11 +13,12 @@ export default function ConfirmModal({
   primaryText,
   secondaryText,
   isLoading,
+  additionaLStyles = {},
 }) {
   return (
     <Modal handleClose={handleClose}>
       {(handlePreClose) => (
-        <div className={styles.container}>
+        <div className={styles.container} style={{ ...additionaLStyles }}>
           <IconButton
             icon={<CloseIcon />}
             size={'medium'}

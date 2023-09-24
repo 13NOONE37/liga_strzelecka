@@ -5,10 +5,6 @@
   grid-template-areas:
     'heading heading close' 'heading heading __' 'content content content'
     'secondary primary primary';
-  /* TODO: improve responsibilty */
-  /* place-items: center center;
-  overflow: auto;
-  padding-bottom: 8px; */
 }
 .close {
   grid-area: close;

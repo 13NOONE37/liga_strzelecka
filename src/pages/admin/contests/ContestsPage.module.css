@@ -25,6 +25,7 @@
   place-items: start center;
 }
 .modalContent > button {
+  margin-top: 1rem;
   width: 100%;
 }
 

@@ -441,6 +441,9 @@ function AddModal({ podiumState, setPodiumState, handleUpdate }) {
 
   return (
     <ConfirmModal
+      additionaLStyles={{
+        minHeight: '350px',
+      }}
       content={
         <div className={styles.placeSelect}>
           <Select
@@ -450,6 +453,7 @@ function AddModal({ podiumState, setPodiumState, handleUpdate }) {
             backgroundColor="#222131"
             height={50}
             width={450}
+            maxMenuHeight={'200px'}
           />
         </div>
       }
