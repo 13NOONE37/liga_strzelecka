@@ -64,7 +64,7 @@ const ContextMenu = forwardRef(({ options, children }, ref) => {
       // console.log('3');
     } else {
       //NOT Displaying at all because screen is too small
-      setPosition('hide');
+      setPosition('left');
     }
   };
   useEffect(() => {
