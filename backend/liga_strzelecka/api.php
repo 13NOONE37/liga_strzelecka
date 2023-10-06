@@ -30,10 +30,10 @@ require('endpoints/contests/managment/contesters/updateContesterPoints.php');
 
 
 $host = 'localhost'; // zmienić w zależności od ustawień bazy
-$username = 'zspjacol_liga_strzelecka'; // zmienić w zależności od ustawień bazy
-$password = 'Doktorek76'; // zmienić w zależności od ustawień bazy
-$database = 'zspjacol_liga_strzelecka'; // zmienić w zależności od ustawień bazy
-$url = 'https://admin.sls.zsoitklodawa.pl'; // zmienić w zależności od serwera
+$username = 'root'; // zmienić w zależności od ustawień bazy
+$password = ''; // zmienić w zależności od ustawień bazy
+$database = ''; // zmienić w zależności od ustawień bazy
+$url = 'localhost'; // zmienić w zależności od serwera
 
 $conn = mysqli_connect($host, $username, $password, $database);
 mysqli_set_charset($conn, 'utf8');
