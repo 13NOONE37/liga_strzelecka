@@ -1,0 +1,1 @@
+to fetch data from backend we call to that url "https://admin.sls.zsoitklodawa.pl/api.php"
