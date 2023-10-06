@@ -11,9 +11,12 @@ const useSession = (setIsLogged, setUserInfo) => {
           setIsLogged(true);
           setUserInfo(data.data);
         }
+        console.log('try: ', data, status);
       } catch (error) {
         setIsLogged(false);
         setUserInfo(null);
+        console.log('catch: ', error);
+
         // console.log(error);
       }
     };

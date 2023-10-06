@@ -30,7 +30,7 @@ function deleteContest($conn)
                 $stmt->execute();
 
                 handleResponse(200, 'Usunięto pomyślnie');
-            } catch (error) {
+            } catch (Exception $error) {
                 handleResponse(404, 'Wystąpił błąd');
 
             }

@@ -43,7 +43,7 @@ function updateShooter($conn)
                 $stmt->execute();
 
                 if ($stmt->affected_rows > 0) {
-                    handleResponse(200, 'Żądanie zostało wykonane pomyślnie', );
+                    handleResponse(200, 'Żądanie zostało wykonane pomyślnie');
                 } else {
                     handleResponse(404, 'Aktualizacja nie powiodła się');
                 }

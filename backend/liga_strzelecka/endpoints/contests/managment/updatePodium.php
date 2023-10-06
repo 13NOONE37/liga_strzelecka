@@ -72,14 +72,11 @@ function updatePodium($conn)
                 // Bind the parameters
                 $stmt->bind_param($paramTypes . 's', ...$boundParams);
                 $stmt->execute();
-                handleResponse(200, 'Żądanie zostało wykonane pomyślnie', );
+                handleResponse(200, 'Żądanie zostało wykonane pomyślnie');
 
             } else {
                 handleResponse(404, 'Brak pól do zaktualizowania');
             }
-
-
-
 
         } else {
             handleResponse(400, 'Żądanie jest niekompletne');

@@ -19,11 +19,6 @@ function getTeams($conn)
         } else {
             handleResponse(400, 'Żądanie jest niekompletne');
         }
-
-
-
-
-
     } else {
         handleResponse(401, 'Nie zalogowano');
     }

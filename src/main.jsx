@@ -6,10 +6,10 @@ import { injectStyle } from 'react-toastify/dist/inject-style';
 injectStyle();
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
-      {/* <HashRouter> */}
+    {/* <BrowserRouter> */}
+    <HashRouter>
       <App />
-    </BrowserRouter>
-    {/* </HashRouter> */}
+      {/* </BrowserRouter> */}
+    </HashRouter>
   </React.StrictMode>,
 );

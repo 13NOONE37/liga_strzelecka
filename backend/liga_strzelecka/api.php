@@ -29,11 +29,11 @@ require('endpoints/contests/managment/contesters/createContester.php');
 require('endpoints/contests/managment/contesters/updateContesterPoints.php');
 
 
-$host = 'localhost'; //zmienić w zależności od ustawień bazy
-$username = 'root'; //zmienić w zależności od ustawień bazy
-$password = ''; //zmienić w zależności od ustawień bazy
-$database = 'liga_strzelecka'; //zmienić w zależności od ustawień bazy
-$url = 'http://localhost:5173'; //zmienić w zależności od serwera
+$host = 'localhost'; // zmienić w zależności od ustawień bazy
+$username = 'zspjacol_liga_strzelecka'; // zmienić w zależności od ustawień bazy
+$password = 'Doktorek76'; // zmienić w zależności od ustawień bazy
+$database = 'zspjacol_liga_strzelecka'; // zmienić w zależności od ustawień bazy
+$url = 'https://admin.sls.zsoitklodawa.pl'; // zmienić w zależności od serwera
 
 $conn = mysqli_connect($host, $username, $password, $database);
 mysqli_set_charset($conn, 'utf8');
@@ -41,7 +41,6 @@ mysqli_set_charset($conn, 'utf8');
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
-
 
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: $url");
@@ -135,12 +134,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 break;
 
         }
+    } else if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+        header('Location: index.html');
     } else {
         handleResponse(400, 'Żądanie jest niekompletne');
     }
-} elseif ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    header('Location: index.html');
 } else {
     handleResponse(405, 'Nieprawidłowa metoda żądania');
 }
-// ?>
+?>
