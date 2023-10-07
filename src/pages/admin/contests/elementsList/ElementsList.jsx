@@ -162,6 +162,21 @@ export default function ElementsList({
     });
   };
 
+  const handleSortForVisibility = (contests) => {
+    if (!currentSeason) return contests;
+    return contests.map((item) => {
+      let newItem = { ...item, visible: true };
+      const dateTimestamp = new Date(newItem.date).getTime();
+      newItem.visible =
+        currentSeason.value === false
+          ? true
+          : dateTimestamp >= currentSeason.value[0] &&
+            dateTimestamp <= currentSeason.value[1];
+
+      return newItem;
+    });
+  };
+
   useEffect(() => {
     if (!currentSeason) return;
     setContests((prev) =>
@@ -262,7 +277,7 @@ export default function ElementsList({
         duration={300}
         delay={50}
       >
-        {handleSort(contests).map((props) => {
+        {handleSortForVisibility(handleSort(contests)).map((props) => {
           return (
             props.visible && (
               <div

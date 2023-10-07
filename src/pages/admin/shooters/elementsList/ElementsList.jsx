@@ -190,15 +190,19 @@ export default function ElementsList({
       return newItem;
     });
   };
+
   useEffect(() => {
     const phrase = elementsState.searchPhrase.trim().replace(/\//g, '\\/');
     const regex = new RegExp(phrase, 'i');
-
     setShooters((prev) =>
       prev.map((item) => {
         let newItem = { ...item, visible: true };
         newItem.visible =
           regex.test(item.firstName) || regex.test(item.secondName);
+        // || regex.test(
+        //   schools.find((school) => school.school_id === item.school_id)?.name,
+        // );
+        //TODO: searching by school name
 
         if (currentSchool?.value) {
           newItem.visible =
@@ -212,6 +216,7 @@ export default function ElementsList({
         return newItem;
       }),
     );
+    console.log(shooters);
   }, [elementsState.searchPhrase, currentSchool, currentGender]);
 
   const { isEveryHidden, isEmpty, isEveryChecked, isAnyChecked } =
