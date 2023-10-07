@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useReducer,
   useRef,
+  useState,
 } from 'react';
 import FlipMove from 'react-flip-move';
 import cx from 'classnames';
@@ -313,6 +314,7 @@ function ConfirmDelete({
   setElementsState,
   handleDelete,
 }) {
+  const [isLoading, setIsLoading] = useState(false);
   return (
     <ConfirmModal
       content={
@@ -335,13 +337,16 @@ function ConfirmDelete({
       heading={'Czy na pewno chcesz usunąć wybrane elementy?'}
       secondaryText={'Anuluj'}
       primaryText={'Usuń'}
+      isLoading={isLoading}
       handleClose={() => {
+        setIsLoading(false);
         setElementsState({
           showDeleteModal: false,
           toDeleteId: undefined,
         });
       }}
       handleConfirm={() => {
+        setIsLoading(true);
         if (elementsState.toDeleteId) {
           return handleDelete(elementsState.toDeleteId);
         }

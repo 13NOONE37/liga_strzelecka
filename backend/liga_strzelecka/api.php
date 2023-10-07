@@ -32,8 +32,8 @@ require('endpoints/contests/managment/contesters/updateContesterPoints.php');
 $host = 'localhost'; // zmienić w zależności od ustawień bazy
 $username = 'root'; // zmienić w zależności od ustawień bazy
 $password = ''; // zmienić w zależności od ustawień bazy
-$database = ''; // zmienić w zależności od ustawień bazy
-$url = 'localhost'; // zmienić w zależności od serwera
+$database = 'liga_strzelecka'; // zmienić w zależności od ustawień bazy
+$url = 'http://localhost:5173'; // zmienić w zależności od serwera
 
 $conn = mysqli_connect($host, $username, $password, $database);
 mysqli_set_charset($conn, 'utf8');
