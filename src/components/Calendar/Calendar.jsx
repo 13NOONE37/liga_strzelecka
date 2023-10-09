@@ -116,7 +116,7 @@ export default function Calendar({
       </div>
       <div className={styles.names}>
         {DAYS_NAMES.map((day) => (
-          <span>{day.slice(0, 3)}</span>
+          <span key={day}>{day.slice(0, 3)}</span>
         ))}
       </div>
       <div className={styles.days}>

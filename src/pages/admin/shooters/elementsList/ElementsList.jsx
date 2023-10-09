@@ -216,7 +216,6 @@ export default function ElementsList({
         return newItem;
       }),
     );
-    console.log(shooters);
   }, [elementsState.searchPhrase, currentSchool, currentGender]);
 
   const { isEveryHidden, isEmpty, isEveryChecked, isAnyChecked } =
