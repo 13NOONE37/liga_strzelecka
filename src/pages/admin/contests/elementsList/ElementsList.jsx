@@ -100,11 +100,7 @@ export default function ElementsList({
 
     if (id) {
       idsToDeleteList.push(
-        fetchData({ action: 'deleteTeam', contest_id: id, team_id: 0 }).then(
-          () => {
-            fetchData({ action: 'deleteContest', contest_id: id });
-          },
-        ),
+        fetchData({ action: 'deleteContest', contest_id: id }),
       );
       idsList.push(id);
     } else {
