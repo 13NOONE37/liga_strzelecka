@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 04, 2023 at 07:20 AM
+-- Generation Time: Dec 13, 2023 at 04:08 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -28,9 +28,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `admins` (
-  `admin_id` char(36) NOT NULL,
-  `login` text NOT NULL,
-  `password` text NOT NULL
+  `admin_id` int(11) NOT NULL,
+  `login` text NOT NULL COMMENT 'Loginy muszą być unikalne',
+  `password` text NOT NULL COMMENT 'Hasło musi zostać zahashowane przy użyciu bcrypt np. tutaj https://bcrypt-generator.com/'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- --------------------------------------------------------
@@ -122,8 +122,7 @@ CREATE TABLE `teams` (
 -- Indexes for table `admins`
 --
 ALTER TABLE `admins`
-  ADD PRIMARY KEY (`admin_id`),
-  ADD UNIQUE KEY `login` (`login`) USING HASH;
+  ADD PRIMARY KEY (`admin_id`);
 
 --
 -- Indexes for table `contesters`
@@ -169,6 +168,16 @@ ALTER TABLE `teams`
   ADD PRIMARY KEY (`team_id`),
   ADD KEY `contest_id` (`contest_id`),
   ADD KEY `school_id` (`school_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `admins`
+--
+ALTER TABLE `admins`
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
