@@ -6,8 +6,8 @@
   grid-template-areas: '_ left top' 'valueSelect table table ';
   grid-gap: 1rem;
   grid-row-gap: 2rem;
-  height: calc(387.4px + 2rem);
-  width: calc(762.8px + 1rem + 210px);
+  /* height: calc(387.4px + 2rem); */
+  width: calc(962.8px + 1rem + 210px);
   align-self: center;
 }
 .empty {
@@ -16,16 +16,16 @@
   color: #9c9ca5;
   min-height: 400px;
 }
-@media (max-width: 1271px) {
+
+@media (max-width: 1500px) {
   .container {
+    width: calc(962.8px);
     grid-template-columns: auto 1fr;
     grid-template-rows: auto 1fr auto;
     grid-template-areas: 'left top' 'table table' 'valueSelect valueSelect';
-
-    height: calc(387.4px + 210px + 5rem);
-    width: 762.8px;
   }
 }
+
 .topControls {
   grid-area: top;
   display: grid;

@@ -146,12 +146,43 @@ export default function ShootTable({
     (contester) =>
       contester.team_id === currentTeam && contester.isInTeam === currentMode,
   );
+
+  const sumContesterPoints = (contester) => {
+    let sum = 0;
+
+    for (let i = 1; i <= 10; i++) {
+      const shootKey = `shoot_${i}`;
+      if (typeof contester[shootKey] === 'number') {
+        sum += contester[shootKey];
+      }
+    }
+
+    return sum;
+  };
+  const countContesterTens = (contester) => {
+    let sum = 0;
+
+    for (let i = 1; i <= 10; i++) {
+      const shootKey = `shoot_${i}`;
+      if (
+        typeof contester[shootKey] === 'number' &&
+        contester[shootKey] === 10
+      ) {
+        sum += 1;
+      }
+    }
+
+    return sum;
+  };
+
   return localContesters.length > 0 ? (
     <>
       <div className={styles.table}>
         <div className={styles['table--nav']}>
           <span>Imię i nazwisko</span>
           <span>Strzały</span>
+          <span>Dziesiątki</span>
+          <span>Punkty</span>
         </div>
         <div className={styles['table--results']} ref={tableElements}>
           {localContesters.map((contester) => {
@@ -262,6 +293,12 @@ export default function ShootTable({
                     currentFocused={currentFocused}
                     setCurrentFocused={setCurrentFocused}
                   />
+                </span>
+                <span className={cx(styles['table--row--element'])}>
+                  {countContesterTens(contester)}
+                </span>
+                <span className={cx(styles['table--row--element'])}>
+                  {sumContesterPoints(contester)}
                 </span>
               </div>
             );

@@ -13,7 +13,8 @@
 }
 .table--nav {
   display: grid;
-  grid-template-columns: 250px 1fr;
+  grid-template-columns: 250px 1fr 100px 100px;
+  padding-right: 10px;
   border-bottom: 2px solid #39394b;
   background-color: hsl(244, 20%, 22%);
   border-radius: 10px 10px 0 0;
@@ -44,7 +45,7 @@
 }
 .table--row {
   display: grid;
-  grid-template-columns: 250px repeat(10, 50px);
+  grid-template-columns: 250px repeat(10, 50px) 100px 100px;
   grid-template-rows: 50px;
   border-bottom: 2px solid #39394b;
 }
@@ -113,7 +114,7 @@
   width: 210px;
   height: 280px;
 }
-@media (max-width: 1271px) {
+/* @media (max-width: 1271px) {
   .valueSelect {
     align-self: center;
     justify-self: center;
@@ -122,7 +123,7 @@
     width: 280px;
     height: 210px;
   }
-}
+} */
 .valueSelect button {
   cursor: pointer;
   border: 3px solid transparent;
