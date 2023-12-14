@@ -134,8 +134,10 @@ export default function ShootTable({
     elements = [];
     if (tableElements.current) {
       for (const element of tableElements.current.children) {
-        const childrenToPush = Array.from(element.children);
-        elements.push(...childrenToPush.slice(1));
+        const childrenToPush = Array.from(
+          element.querySelectorAll('span:has(input)'),
+        );
+        elements.push(...childrenToPush);
       }
       setCurrentFocused(elements[0].children[0]);
     }
