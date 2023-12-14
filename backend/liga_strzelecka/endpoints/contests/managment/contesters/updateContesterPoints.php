@@ -18,7 +18,7 @@ function updateContesterPoints($conn)
                 if (preg_match('/^shoot_[1-9]|10$/', $pointName)) {
                     $query = "UPDATE contesters SET $pointName = ? WHERE shooter_id=? AND team_id=?";
                     $stmt = mysqli_prepare($conn, $query);
-                    $stmt->bind_param('ssi', $value, $shooter_id, $team_id);
+                    $stmt->bind_param('sss', $value, $shooter_id, $team_id);
                     $stmt->execute();
 
                     handleResponse(200, 'Żądanie zostało wykonane pomyślnie');
