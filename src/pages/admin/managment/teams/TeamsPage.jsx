@@ -279,10 +279,12 @@ export default function TeamsPage() {
               (contester) =>
                 !(
                   individualsToDelete.has(contester.shooter_id) &&
+                  contester.team_id === team_id &&
                   contester.isInTeam == 0
                 ) &&
                 !(
                   teamToDelete.has(contester.shooter_id) &&
+                  contester.team_id === team_id &&
                   contester.isInTeam == 1
                 ),
             ),
