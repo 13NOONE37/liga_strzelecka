@@ -32,8 +32,8 @@
 .modalContent {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto auto 1fr auto;
-  grid-template-areas: 'first second' 'gender gender' 'school school' '_ __' 'add add';
+  grid-template-rows: auto auto auto auto 1fr auto;
+  grid-template-areas: 'first second' 'gender gender' 'school school' 'optional_school optional_school' '_ __' 'add add';
   grid-gap: 1em;
   place-items: center;
   height: 100%;
@@ -56,4 +56,7 @@
 }
 .modalContent--field__school {
   grid-area: school;
+}
+.modalContent--field__optional_school {
+  grid-area: optional_school;
 }

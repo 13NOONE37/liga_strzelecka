@@ -39,18 +39,24 @@
   width: 762.8px;
 }
 
-.table--nav {
+.table--nav,
+.table--nav--individual {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: auto 1fr auto;
   place-items: center;
   padding: 0.2rem 1rem;
 
   background-color: hsl(244, 20%, 22%);
 }
-
-.table--nav span {
+.table--nav span,
+.table--nav--individual span {
   text-align: center;
   padding: 12px;
+}
+.table--nav--individual {
+  grid-template-columns: 1fr;
+}
+.table--nav--individual {
 }
 .teamName {
   padding-left: 39.2px !important;

@@ -1,13 +1,14 @@
 .container {
 }
 .nav {
-  grid-template-columns: 75px 130px 180px 1fr auto;
+  grid-template-columns: 75px 130px 220px 1fr auto;
 }
+
 .elements {
   height: calc(100vh - 453px);
 }
 .element {
-  grid-template-columns: 75px 130px 180px 1fr auto;
+  grid-template-columns: 75px 130px 220px 1fr auto;
 }
 
 .searchNav {

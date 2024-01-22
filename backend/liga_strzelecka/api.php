@@ -26,9 +26,15 @@ require('endpoints/contests/managment/teams/createTeam.php');
 require('endpoints/contests/managment/teams/deleteTeam.php');
 require('endpoints/contests/managment/contesters/getContesters.php');
 require('endpoints/contests/managment/contesters/createContester.php');
+require('endpoints/contests/managment/contesters/deleteContester.php');
 require('endpoints/contests/managment/contesters/updateContesterPoints.php');
 
 
+// $host = 'localhost'; // zmienić w zależności od ustawień bazy
+// $username = 'zspjacol_liga_strzelecka'; // zmienić w zależności od ustawień bazy
+// $password = 'Doktorek76'; // zmienić w zależności od ustawień bazy
+// $database = 'zspjacol_liga_strzelecka'; // zmienić w zależności od ustawień bazy
+// $url = 'https://admin.sls.zsoitklodawa.pl'; // zmienić w zależności od serwera
 $host = 'localhost'; // zmienić w zależności od ustawień bazy
 $username = 'root'; // zmienić w zależności od ustawień bazy
 $password = ''; // zmienić w zależności od ustawień bazy
@@ -124,6 +130,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 break;
             case 'createContester':
                 createContester($conn);
+                break;
+            case 'deleteContester':
+                deleteContester($conn);
                 break;
             case 'updateContesterPoints':
                 updateContesterPoints($conn);

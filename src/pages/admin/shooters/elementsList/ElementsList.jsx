@@ -181,7 +181,9 @@ export default function ElementsList({
 
       if (currentSchool?.value) {
         newItem.visible =
-          newItem.visible && item.school_id === currentSchool.value;
+          newItem.visible &&
+          (item.school_id === currentSchool.value ||
+            item.second_school_id === currentSchool.value);
       }
       if (typeof currentGender?.value === 'number') {
         newItem.visible = newItem.visible && item.isMan === currentGender.value;
@@ -335,6 +337,7 @@ export default function ElementsList({
             disabled={isEmpty || isEveryHidden}
           />
         </li>
+
         <li className={styles['nav--element']}>
           <IconButton
             size={'small'}
@@ -389,6 +392,7 @@ export default function ElementsList({
 const ShooterComponent = ({
   shooter_id,
   school_id,
+  second_school_id,
   firstName,
   secondName,
   checked,
@@ -403,6 +407,9 @@ const ShooterComponent = ({
   const schoolName = schools.find(
     (school) => school.school_id === school_id,
   ).name;
+  const secondSchoolName = schools.find(
+    (school) => school.school_id === second_school_id,
+  )?.name;
   return (
     <>
       <Checkbox
@@ -411,7 +418,10 @@ const ShooterComponent = ({
       />
       <span>{firstName}</span>
       <span>{secondName}</span>
-      <span>{schoolName}</span>
+      <span>
+        {schoolName}
+        {secondSchoolName ? `, ${secondSchoolName}` : ''}
+      </span>
       <ContextMenu
         options={[
           {

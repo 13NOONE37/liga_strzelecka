@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import cx from 'classnames';
 import styles from './ManagmentPage.module.css';
 import AnimatedPage from '../../../components/animatedPage/AnimatedPage';
@@ -15,7 +15,11 @@ import Loader from '../../../components/Loader/Loader';
 import ContestsContext from '../../../store/ContestsContext';
 import getTeams from '../../../utils/endpoints/getTeams';
 import getContesters from '../../../utils/endpoints/getContesters';
+import DataContext from '../../../store/DataContext';
+
 export default function ManagmentPage() {
+  const { contests, schools } = useContext(DataContext);
+
   const navigate = useNavigate();
   const { id } = useParams();
   const { pathname } = useResolvedPath();
@@ -31,7 +35,11 @@ export default function ManagmentPage() {
   const [teams, setTeams] = useState(null);
   const [contesters, setContesters] = useState(null);
   const [contestId, setContestId] = useState(id);
-
+  const contenstName = schools.find(
+    ({ school_id }) =>
+      school_id ===
+      contests.find(({ contest_id }) => contest_id === contestId).location,
+  )?.name;
   useEffect(() => {
     if (contestId === undefined) navigate('/admin/contests');
 
@@ -103,7 +111,6 @@ export default function ManagmentPage() {
         setIsLoading(!isLoading);
       }, 600);
   }, [preIsLoading]);
-
   return (
     <ContestsContext.Provider
       value={{ teams, setTeams, contesters, setContesters, contestId }}
@@ -124,7 +131,7 @@ export default function ManagmentPage() {
                 action={() => navigate('/admin/contests')}
               />
             </div>
-            <div>
+            <div className={styles.navContainer}>
               <nav className={styles.nav}>
                 <button
                   className={cx({
@@ -158,6 +165,7 @@ export default function ManagmentPage() {
                   Podium
                 </button>
               </nav>
+              <h2>Runda: {contenstName}</h2>
             </div>
             <Outlet />
           </div>

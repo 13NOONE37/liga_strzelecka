@@ -13,6 +13,11 @@ function updateShooter($conn)
                 $params[] = $_POST['school_id'];
                 $paramTypes .= 's';
             }
+            if (isset($_POST['second_school_id'])) {
+                $fieldsToUpdate[] = 'second_school_id = ?';
+                $params[] = $_POST['second_school_id'];
+                $paramTypes .= 's';
+            }
             if (isset($_POST['firstName'])) {
                 $fieldsToUpdate[] = 'firstName = ?';
                 $params[] = $_POST['firstName'];

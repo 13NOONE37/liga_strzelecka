@@ -29,15 +29,33 @@ export default function TeamsPage() {
       showModal: false,
       preShowModal: false,
       shotSelectModal: false,
+      edit: {},
 
       isFocused: false,
     },
   );
 
+  const convertShootersToSelectOptions = (items) => {
+    return items.map((item) => {
+      const person = shooters.find(
+        (shooter) => shooter.shooter_id === item.shooter_id,
+      );
+      return {
+        label: `${person.firstName} ${person.secondName}`,
+        value: item.shooter_id,
+      };
+    });
+  };
   const formInitialValues = {
-    team: null,
-    individuals: null,
-    school: null,
+    team: teamsState.edit?.teamContesters
+      ? convertShootersToSelectOptions(teamsState.edit.teamContesters)
+      : null,
+    individuals: teamsState.edit?.individualContesters
+      ? convertShootersToSelectOptions(teamsState.edit.individualContesters)
+      : null,
+    school: teamsState.edit?.schoolName
+      ? { value: teamsState.edit.school_id, label: teamsState.edit.schoolName }
+      : null,
   };
 
   const handleValidate = (values) => {
@@ -164,6 +182,124 @@ export default function TeamsPage() {
     setSubmitting(false);
   };
 
+  const getDifference = (setA, setB) => {
+    return new Set([...setA].filter((element) => !setB.has(element)));
+  };
+  const handleUpdate = async (values, { setSubmitting, resetForm }) => {
+    try {
+      const newContesters = [...contesters];
+
+      const oldIndividuals = new Set(
+        teamsState.edit.individualContesters.map((item) => item.shooter_id),
+      );
+      const newIndividuals = new Set(
+        values.individuals.map((item) => item.value),
+      );
+      const oldTeam = new Set(
+        teamsState.edit.teamContesters.map((item) => item.shooter_id),
+      );
+      const newTeam = new Set(values.team.map((item) => item.value));
+
+      const individualsToDelete = getDifference(oldIndividuals, newIndividuals);
+      const individualsToAdd = getDifference(newIndividuals, oldIndividuals);
+      const teamToDelete = getDifference(oldTeam, newTeam);
+      const teamToAdd = getDifference(newTeam, oldTeam);
+      const team_id = teamsState.edit.team_id;
+
+      const contestersToDelete = [];
+      for (let shooter_id of [...individualsToDelete, ...teamToDelete]) {
+        contestersToDelete.push(
+          fetchData({
+            action: 'deleteContester',
+            team_id: team_id,
+            shooter_id: shooter_id,
+          }),
+        );
+      }
+
+      Promise.all(contestersToDelete).then(() => {
+        const contestersToAdd = [];
+        for (const shooter_id of teamToAdd) {
+          contestersToAdd.push(
+            fetchData({
+              action: 'createContester',
+              team_id: team_id,
+              shooter_id: shooter_id,
+              isInTeam: 1,
+            }),
+          );
+          newContesters.push({
+            team_id: team_id,
+            shooter_id: shooter_id,
+            isInTeam: 1,
+            shoot_1: null,
+            shoot_2: null,
+            shoot_3: null,
+            shoot_4: null,
+            shoot_5: null,
+            shoot_6: null,
+            shoot_7: null,
+            shoot_8: null,
+            shoot_9: null,
+            shoot_10: null,
+          });
+        }
+        for (const shooter_id of individualsToAdd) {
+          contestersToAdd.push(
+            fetchData({
+              action: 'createContester',
+              team_id: team_id,
+              shooter_id: shooter_id,
+              isInTeam: 0,
+            }),
+          );
+          newContesters.push({
+            team_id: team_id,
+            shooter_id: shooter_id,
+            isInTeam: 0,
+            shoot_1: null,
+            shoot_2: null,
+            shoot_3: null,
+            shoot_4: null,
+            shoot_5: null,
+            shoot_6: null,
+            shoot_7: null,
+            shoot_8: null,
+            shoot_9: null,
+            shoot_10: null,
+          });
+        }
+        Promise.all(contestersToAdd).then(() => {
+          setTeamsState({
+            preShowModal: false,
+          });
+
+          setContesters(
+            newContesters.filter(
+              (contester) =>
+                !(
+                  individualsToDelete.has(contester.shooter_id) &&
+                  contester.isInTeam == 0
+                ) &&
+                !(
+                  teamToDelete.has(contester.shooter_id) &&
+                  contester.isInTeam == 1
+                ),
+            ),
+          );
+          resetForm();
+        });
+      });
+    } catch (error) {
+      toast.error('Coś poszło nie tak. Spróbuj ponownie.', {
+        autoClose: 4000,
+        closeButton: false,
+        pauseOnHover: false,
+      });
+    }
+    setSubmitting(false);
+  };
+
   return (
     <div className={styles.container}>
       <DefaultButton
@@ -186,6 +322,25 @@ export default function TeamsPage() {
               shooters={shooters}
               schools={schools}
               team={team}
+              setEditing={(
+                team_id,
+                school_id,
+                schoolName,
+                teamContesters,
+                individualContesters,
+              ) =>
+                setTeamsState({
+                  edit: {
+                    team_id,
+                    school_id,
+                    schoolName,
+                    teamContesters,
+                    individualContesters,
+                  },
+                  showModal: true,
+                  preShowModal: true,
+                })
+              }
               key={team.team_id}
             />
           ))
@@ -200,12 +355,18 @@ export default function TeamsPage() {
       >
         {teamsState.showModal && (
           <NewModal
-            setShowModal={(value) => setTeamsState({ showModal: value })}
+            setShowModal={(value) =>
+              setTeamsState({ showModal: value, edit: {} })
+            }
             preShowModal={teamsState.preShowModal}
             setPreShowModal={(value) =>
               setTeamsState({ preShowModal: value, isFocused: false })
             }
-            headline={'Dodawanie drużyny'}
+            headline={
+              teamsState.edit?.team_id
+                ? 'Edytowanie drużyny'
+                : 'Dodawanie drużyny'
+            }
             inTimeMs={250}
             outTimeMs={150}
             width={600}
@@ -214,7 +375,9 @@ export default function TeamsPage() {
               initialValues={formInitialValues}
               validate={handleValidate}
               validateOnBlur={true}
-              onSubmit={handleSubmitAdd}
+              onSubmit={
+                teamsState.edit?.team_id ? handleUpdate : handleSubmitAdd
+              }
             >
               {({
                 values,
@@ -271,6 +434,7 @@ export default function TeamsPage() {
                         setIsFocused={() => setTeamsState({ isFocused: true })}
                         focusOnMount
                         setTouched={() => setFieldTouched('school', true)}
+                        isDisabled={teamsState.edit?.team_id}
                       />
                     </SelectWithHeading>
                   </div>
@@ -298,7 +462,9 @@ export default function TeamsPage() {
                           shooters
                             .filter(
                               (shooter) =>
-                                shooter.school_id === values.school.value &&
+                                (shooter.school_id === values.school.value ||
+                                  shooter.second_school_id ===
+                                    values.school.value) &&
                                 !values.individuals?.find(
                                   ({ value }) => value === shooter.shooter_id,
                                 ),
@@ -337,7 +503,9 @@ export default function TeamsPage() {
                           shooters
                             .filter(
                               (shooter) =>
-                                shooter.school_id === values.school.value &&
+                                (shooter.school_id === values.school.value ||
+                                  shooter.second_school_id ===
+                                    values.school.value) &&
                                 !values.team?.find(
                                   ({ value }) => value === shooter.shooter_id,
                                 ),
@@ -355,14 +523,16 @@ export default function TeamsPage() {
                   </div>
 
                   <DefaultButton
-                    text={'Dodaj'}
+                    text={teamsState.edit?.team_id ? 'Aktualizuj' : 'Dodaj'}
                     type={'submit'}
                     isLoading={isSubmitting}
                     disabled={
                       isSubmitting ||
                       !values.team ||
-                      Object.values(errors).length > 0 ||
-                      Object.values(touched).length === 0
+                      (teamsState.edit?.team_id
+                        ? false
+                        : Object.values(errors).length > 0 ||
+                          Object.values(touched).length === 0)
                     }
                   />
                 </form>

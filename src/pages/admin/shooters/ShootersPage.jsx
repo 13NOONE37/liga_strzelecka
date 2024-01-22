@@ -54,6 +54,14 @@ export default function ShootersPage() {
       : shooterState.currentSchool.value
       ? shooterState.currentSchool
       : null,
+    optional_school: currentShooter?.second_school_id
+      ? {
+          value: currentShooter.second_school_id,
+          label: schools.find(
+            (school) => school.school_id === currentShooter.second_school_id,
+          ).name,
+        }
+      : null,
   };
 
   const handleValidate = (values) => {
@@ -94,6 +102,7 @@ export default function ShootersPage() {
       newShooters.push({
         shooter_id: id,
         school_id: values.school.value,
+        second_school_id: values.optional_school?.value ?? '',
         firstName: values.firstName,
         secondName: values.secondName,
         isMan: values.isMan.value,
@@ -106,6 +115,7 @@ export default function ShootersPage() {
         action: 'createShooter',
         shooter_id: id,
         school_id: values.school.value,
+        second_school_id: values.optional_school?.value ?? '',
         firstName: values.firstName,
         secondName: values.secondName,
         isMan: values.isMan.value,
@@ -134,6 +144,7 @@ export default function ShootersPage() {
         action: 'updateShooter',
         shooter_id: shooterState.editId,
         school_id: values.school.value,
+        second_school_id: values.optional_school?.value ?? '',
         firstName: values.firstName,
         secondName: values.secondName,
         isMan: values.isMan.value,
@@ -150,6 +161,7 @@ export default function ShootersPage() {
               return {
                 ...item,
                 school_id: values.school.value,
+                second_school_id: values.optional_school?.value ?? '',
                 firstName: values.firstName,
                 secondName: values.secondName,
                 isMan: values.isMan.value,
@@ -386,6 +398,45 @@ export default function ShootersPage() {
                             setShooterState({ isFocused: true })
                           }
                           setTouched={() => setFieldTouched('school', true)}
+                        />
+                      </SelectWithHeading>
+                    </div>
+                    <div
+                      className={cx(
+                        styles['modalContent--field'],
+                        styles['modalContent--field__optional_school'],
+                      )}
+                    >
+                      <SelectWithHeading
+                        heading={'Wybierz szkołę dodatkową'}
+                        status={
+                          touched.optional_school &&
+                          errors.optional_school?.status
+                        }
+                        statusMessage={errors.optional_school?.message}
+                      >
+                        <Select
+                          placeholder={'Szkoła dodatkowa'}
+                          height={50}
+                          options={[
+                            { value: '', label: 'Brak' },
+                            ...schools.map(({ school_id, name }) => ({
+                              value: school_id,
+                              label: name,
+                            })),
+                          ]}
+                          isSearchable={true}
+                          backgroundColor={'#222131'}
+                          value={values.optional_school}
+                          onChange={(value) =>
+                            setFieldValue('optional_school', value)
+                          }
+                          setIsFocused={() =>
+                            setShooterState({ isFocused: true })
+                          }
+                          setTouched={() =>
+                            setFieldTouched('optional_school', true)
+                          }
                         />
                       </SelectWithHeading>
                     </div>

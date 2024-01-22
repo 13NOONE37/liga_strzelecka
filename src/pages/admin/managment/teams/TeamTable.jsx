@@ -4,6 +4,7 @@ import { IconButton } from '../../../../components/button/Button';
 import cx from 'classnames';
 import styles from './TeamsPage.module.css';
 import { ReactComponent as DeleteIcon } from '../../../../assets/icons/delete.svg';
+import { ReactComponent as EditIcon } from '../../../../assets/icons/edit.svg';
 import ConfirmDelete from './ConfirmDelete';
 
 function TeamTable({
@@ -13,6 +14,7 @@ function TeamTable({
   shooters,
   schools,
   team,
+  setEditing,
 }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const handleDelete = async () => {
@@ -54,6 +56,20 @@ function TeamTable({
     <>
       <div className={styles.table}>
         <div className={styles['table--nav']}>
+          <IconButton
+            icon={<EditIcon />}
+            action={() =>
+              setEditing(
+                team.team_id,
+                team.school_id,
+                schoolName,
+                teamContesters,
+                individualContesters,
+              )
+            }
+            size={'small'}
+            style={'secondary'}
+          />
           <span className={styles.teamName}>Drużyna - {schoolName}</span>
           <IconButton
             icon={<DeleteIcon />}
@@ -82,7 +98,7 @@ function TeamTable({
         </div>
         {individualContesters?.length > 0 && (
           <>
-            <div className={styles['table--nav']}>
+            <div className={styles['table--nav--individual']}>
               <span>Strzelcy indywidualni</span>
             </div>
             <div className={styles['table--results']}>

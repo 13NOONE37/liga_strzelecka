@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 13, 2023 at 04:08 PM
+-- Generation Time: Jan 22, 2024 at 10:07 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -96,6 +96,7 @@ CREATE TABLE `schools` (
 CREATE TABLE `shooters` (
   `shooter_id` char(36) NOT NULL,
   `school_id` char(36) NOT NULL,
+  `second_school_id` char(36) DEFAULT NULL,
   `firstName` varchar(32) NOT NULL,
   `secondName` varchar(32) NOT NULL,
   `isMan` tinyint(1) NOT NULL,

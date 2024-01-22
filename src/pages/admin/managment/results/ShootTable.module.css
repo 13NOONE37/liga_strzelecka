@@ -4,6 +4,7 @@
   color: #fff;
   grid-area: table;
   align-self: start;
+  position: relative;
 }
 .empty {
   display: grid;
@@ -66,6 +67,25 @@
 }
 .table--row--element:last-child {
   border-right: unset;
+}
+.totalPoints {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  display: grid;
+  grid-template-columns: 140px 140px;
+}
+.totalPoints span {
+  border: 2px solid #39394b;
+  text-align: center;
+  padding: 12px;
+}
+.totalPoints span:nth-child(1) {
+  border-radius: 0 0 0 10px;
+  border-right: unset;
+}
+.totalPoints span:nth-child(2) {
+  border-radius: 0 0 10px 0;
 }
 .selectValue {
   width: 100%;

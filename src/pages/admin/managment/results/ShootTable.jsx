@@ -176,7 +176,16 @@ export default function ShootTable({
 
     return sum;
   };
-
+  const getTotalTeamPoints = () => {
+    return localContesters.reduce((acc, value) => {
+      return acc + sumContesterPoints(value);
+    }, 0);
+  };
+  const getTotalTeamTens = () => {
+    return localContesters.reduce((acc, value) => {
+      return acc + countContesterTens(value);
+    }, 0);
+  };
   return localContesters.length > 0 ? (
     <>
       <div className={styles.table}>
@@ -306,19 +315,20 @@ export default function ShootTable({
             );
           })}
         </div>
+        {currentMode ? (
+          <div className={styles.totalPoints}>
+            <span>Dziesiątki: {getTotalTeamTens()}</span>
+            <span>Punkty: {getTotalTeamPoints()}</span>
+          </div>
+        ) : null}
       </div>
+
       <div className={styles.valueSelect}>
-        <button onClick={() => setValue(10)}>10</button>
-        <button onClick={() => setValue(9)}>9</button>
-        <button onClick={() => setValue(8)}>8</button>
-        <button onClick={() => setValue(7)}>7</button>
-        <button onClick={() => setValue(6)}>6</button>
-        <button onClick={() => setValue(5)}>5</button>
-        <button onClick={() => setValue(4)}>4</button>
-        <button onClick={() => setValue(3)}>3</button>
-        <button onClick={() => setValue(2)}>2</button>
-        <button onClick={() => setValue(1)}>1</button>
-        <button onClick={() => setValue(0)}>0</button>
+        {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0].map((n) => (
+          <button onClick={() => setValue(n)} key={`valueSelect-${n}`}>
+            {n}
+          </button>
+        ))}
         <button disabled className={styles.disabledButton}></button>
       </div>
     </>
